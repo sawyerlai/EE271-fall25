@@ -62,34 +62,38 @@ class ProcessingElement:
     def _handle_mac(self, instruction : ProcessingElementInstruction):
         # START IMPLEMENTATION
         mode = instruction.get_mode_bitwidth()
-        num_channels = self._config.OUTPUT_BITWIDTH // mode 
+        num_channels = self._config.INPUT_BITWIDTH // mode 
         vacc_width = self._config.ACCUMULATION_BITWIDTH // num_channels
-        mask = (1 << mode) - 1 # gets us the correct bits so we don't overflow
 
         for i in range(num_channels):
             a_val = self._input_a_value[i * mode : i * mode + mode].int
             b_val = self._input_b_value[i * mode : i * mode + mode].int
             acc_val = self._acc_value[i * vacc_width : i * vacc_width + vacc_width].int
+
+            # MAC operation 
             final_val = acc_val + a_val * b_val
-            self._acc_value._overwrite(BitArray(int=final_val, length=vacc_width), i * vacc_width)
+
+            # Wrap
+            wrapped = final_val & ((1 << vacc_width) - 1)
+            self._acc_value._overwrite(BitArray(uint=wrapped, length=vacc_width), i * vacc_width)
         # END IMPLEMENTATION
         return None
 
     def _handle_out(self, instruction : ProcessingElementInstruction):
         # START IMPLEMENTATION
         mode = instruction.get_mode_bitwidth()
-        num_channels = self._config.OUTPUT_BITWIDTH // mode 
+        num_channels = self._config.INPUT_BITWIDTH // mode 
         vacc_width = self._config.ACCUMULATION_BITWIDTH // num_channels
-        result = BitArray()
 
-        for i in reversed(range(num_channels)):
-            start, end = self.get_indices(i, self._config.ACCUMULATION_BITWIDTH, mode, num_channels)
-            acc_val = self._acc_value[start:end]
-            result.append(BitArray(int=acc_val[-mode:].int, length=mode))
+        pieces = [lane[-mode:] for lane in self._acc_value.cut(vacc_width)]
+        result = Bits().join(pieces)
         
-        if len(result) > self._config.OUTPUT_BITWIDTH:
+        if len(result) > self._config.OUTPUT_BITWIDTH: # If longer, keep LSB bits
             self._output_value = result[-self._config.OUTPUT_BITWIDTH:]
-        else:
+        elif len(result) < self._config.OUTPUT_BITWIDTH: # If shorter, left pad
+            pad = BitArray(uint=0, length=(self._config.OUTPUT_BITWIDTH - len(result)))
+            self._output_value = pad + result
+        else: 
             self._output_value = result
         # END IMPLEMENTATION
         return None
@@ -97,7 +101,7 @@ class ProcessingElement:
     def _handle_pass(self, instruction : ProcessingElementInstruction):
         # START IMPLEMENTATION
         mode = instruction.get_mode_bitwidth()
-        num_channels = self._config.OUTPUT_BITWIDTH // mode 
+        num_channels = self._config.INPUT_BITWIDTH // mode 
         vacc_width = self._config.ACCUMULATION_BITWIDTH // num_channels
         result = BitArray()
 
@@ -111,8 +115,11 @@ class ProcessingElement:
 
     def _handle_clr(self, instruction : ProcessingElementInstruction):
         # START IMPLEMENTATION
+
+        # Set to zero 
         self._acc_value = BitArray(uint=0, length=self._config.ACCUMULATION_BITWIDTH)
         self._output_value = BitArray(uint=0, length=self._config.OUTPUT_BITWIDTH)
+        
         # END IMPLEMENTATION
         return None
 
@@ -120,14 +127,14 @@ class ProcessingElement:
         # START IMPLEMENTATION
         shift_val = instruction.get_value().uint
         mode = instruction.get_mode_bitwidth()
-        num_channels = self._config.OUTPUT_BITWIDTH // mode
+        num_channels = self._config.INPUT_BITWIDTH // mode
         vacc_width = self._config.ACCUMULATION_BITWIDTH // num_channels
 
         for i in range(num_channels):
             start, end = self.get_indices(i, self._config.ACCUMULATION_BITWIDTH, mode, num_channels)
-            acc_val = self._acc_value[start:end]
-            acc_val = acc_val.__irshift__(shift_val)
-            self._acc_value._overwrite(acc_val[-mode:], end - mode)
+            lane = self._acc_value[start:end]
+            shifted = BitArray(int=(lane.int >> shift_val), length=vacc_width)
+            self._acc_value._overwrite(shifted, start)
         # END IMPLEMENTATION
         return None
 

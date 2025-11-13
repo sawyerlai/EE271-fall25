@@ -47,33 +47,28 @@ class MainBuffer:
 
     def _handle_read(self, instruction : MemoryInstruction) -> None:
         # START IMPLEMENTATION
-        mode = Mode.bitwidth(instruction.get_mode().uint)
+        mode = Mode.bitwidth(int(instruction.get_mode().uint))
 
-        mema_offset = instruction.get_mema_offset().uint
-        memb_offset = instruction.get_memb_offset()
+        mema_offset = int(instruction.get_mema_offset().uint)
+        memb_offset = int(instruction.get_memb_offset().uint)
 
         self._mem0_output_port = self._mem0[mema_offset]
         
         if mode == 32:
-            self._mem1_output_port = self._mem1[memb_offset.uint]
+            self._mem1_output_port = self._mem1[memb_offset]
         elif mode == 16:
-            data = self._mem1[memb_offset[:-1].uint]
-            if memb_offset[-1]:
-                data = data[:16]
-            else:
-                data = data[-16:]
-            self._mem1_output_port = Bits().join([data]*2)
-        else:
-            data = self._mem1[memb_offset[:-2].uint]
-            if memb_offset[-2:] == 3:
-                data = data[:8]
-            elif memb_offset[-2:] == 2:
-                data = data[8:16]
-            elif memb_offset[-2:] == 1:
-                data = data[16:24]
-            else:
-                data = data[24:32]
-            self._mem1_output_port = Bits().join([data]*4)
+            base = memb_offset >> 1
+            sel  = memb_offset & 1
+            word = self._mem1[base]
+            half = word[:16] if sel == 1 else word[-16:]
+            self._mem1_output_port = Bits().join([half, half])
+        elif mode == 8:
+            base = memb_offset >> 2
+            sel  = memb_offset & 3
+            word = self._mem1[base]
+            bytes_msb_to_lsb = list(word.cut(8))  
+            piece = bytes_msb_to_lsb[3 - sel]     
+            self._mem1_output_port = Bits().join([piece, piece, piece, piece])
 
         # END IMPLEMENTATION
         return None
@@ -81,7 +76,8 @@ class MainBuffer:
     def _handle_write(self, instruction : MemoryInstruction) -> None:
         # START IMPLEMENTATION
         # This instruction indicates that the output data from the PEs should be written to MEM2 at the address pointed to by MemAOffset.
-        
+        addr = instruction.get_mema_offset().uint
+        self._mem2[addr] = self._mem2_input_port
         # END IMPLEMENTATION
         return None
 
