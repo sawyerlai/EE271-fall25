@@ -37,6 +37,7 @@ module processing_element(
     int vacc_width;
 
     always @* begin
+        integer i;
         next_output_value = vector_output;
         next_acc_value = acc_value;
 
@@ -49,21 +50,21 @@ module processing_element(
                 `PE_RND_OPCODE: begin
                     case (mode)
                         2'd0: begin
-                            for (int i = 0; i < 4; i++) begin
-                                lane = acc_value[i * `PE_ACCUMULATION_BITWIDTH/4 +: `PE_ACCUMULATION_BITWIDTH/4];
-                                shifted = lane >> value;
-                                next_acc_value[i * `PE_ACCUMULATION_BITWIDTH/4 +: `PE_ACCUMULATION_BITWIDTH/4] = shifted[0 +: `PE_ACCUMULATION_BITWIDTH/4];
+                            for (i = 0; i < 4; i++) begin
+                                logic [`PE_ACCUMULATION_BITWIDTH/4 - 1:0] lane = acc_value[i * `PE_ACCUMULATION_BITWIDTH/4 +: `PE_ACCUMULATION_BITWIDTH/4];
+                                logic [`PE_ACCUMULATION_BITWIDTH/4 - 1:0] shifted = lane >> value;
+                                next_acc_value[i * `PE_ACCUMULATION_BITWIDTH/4 +: `PE_ACCUMULATION_BITWIDTH/4] = shifted;
                             end
                         end
                         2'd1: begin
-                            for (int i = 0; i < 2; i++) begin
-                                lane = acc_value[i * `PE_ACCUMULATION_BITWIDTH/2 +: `PE_ACCUMULATION_BITWIDTH/2];
-                                shifted = lane >> value;
-                                next_acc_value[i * `PE_ACCUMULATION_BITWIDTH/2 +: `PE_ACCUMULATION_BITWIDTH/2] = shifted[0 +: `PE_ACCUMULATION_BITWIDTH/2];
+                            for (i = 0; i < 2; i++) begin
+                                logic [`PE_ACCUMULATION_BITWIDTH/2 - 1:0] lane = acc_value[i * `PE_ACCUMULATION_BITWIDTH/2 +: `PE_ACCUMULATION_BITWIDTH/2];
+                                logic [`PE_ACCUMULATION_BITWIDTH/2 - 1:0] shifted = lane >> value;
+                                next_acc_value[i * `PE_ACCUMULATION_BITWIDTH/4 +: `PE_ACCUMULATION_BITWIDTH/4] = shifted;
                             end
                         end
                         default: begin
-                            shifted = acc_value >> value;
+                            logic [`PE_ACCUMULATION_BITWIDTH - 1:0] shifted = acc_value >> value;
                             next_acc_value = shifted;
                         end
                     endcase
@@ -71,28 +72,86 @@ module processing_element(
                 default: begin
                     case (value) 
                         `PE_MAC_VALUE: begin
-                            for (int i = 0; i < num_channels; i++) begin
-                                logic [`PE_INPUT_BITWIDTH - 1:0] a_val = vector_input[i * mode_bitwidth +: mode_bitwidth];
-                                logic [`PE_INPUT_BITWIDTH - 1:0] b_val = matrix_input[i * mode_bitwidth +: mode_bitwidth];
-                                temp_val[0 +: vacc_width] = acc_value[i * vacc_width +: vacc_width];
+                            case (mode)
+                                2'd0: begin
+                                    for (i = 0; i < 4; i++) begin
+                                        logic [`PE_ACCUMULATION_BITWIDTH/4 - 1:0] final_val;
+                                        logic [`PE_ACCUMULATION_BITWIDTH/4 - 1:0] wrapped;
+                                        logic [`PE_INPUT_BITWIDTH/4 - 1:0] a_val = vector_input[i * 8 +: 8];
+                                        logic [`PE_INPUT_BITWIDTH/4 - 1:0] b_val = matrix_input[i * 8 +: 8];
 
-                                logic [`PE_ACCUMULATION_BITWIDTH - 1:0] final_val = temp_val + a_val * b_val;
-                                logic [`PE_ACCUMULATION_BITWIDTH - 1:0] wrapped = final_val & ((1 << vacc_width) - 1);
+                                        temp_val[0 +: `PE_ACCUMULATION_BITWIDTH/4] = acc_value[i * `PE_ACCUMULATION_BITWIDTH/4 +: `PE_ACCUMULATION_BITWIDTH/4];
+                                        final_val = temp_val + a_val * b_val;
+                                        wrapped = final_val & ((1 << `PE_ACCUMULATION_BITWIDTH/4) - 1);
+                                        next_acc_value[i * `PE_ACCUMULATION_BITWIDTH/4 +: `PE_ACCUMULATION_BITWIDTH/4] = wrapped[0 +: `PE_ACCUMULATION_BITWIDTH/4];
+                                    end
+                                end
+                                2'd1: begin
+                                    for (i = 0; i < 4; i++) begin
+                                        logic [`PE_INPUT_BITWIDTH/2 - 1:0] a_val = vector_input[i * 16 +: 16];
+                                        logic [`PE_INPUT_BITWIDTH/2 - 1:0] b_val = matrix_input[i * 16 +: 16];
+                                        logic [`PE_ACCUMULATION_BITWIDTH/2 - 1:0] final_val;
+                                        logic [`PE_ACCUMULATION_BITWIDTH/2 - 1:0] wrapped;
 
-                                next_acc_value[i * vacc_width +: vacc_width] = wrapped[0 +: vacc_width];
-                            end
+                                        temp_val[0 +: `PE_ACCUMULATION_BITWIDTH/2] = acc_value[i * `PE_ACCUMULATION_BITWIDTH/2 +: `PE_ACCUMULATION_BITWIDTH/2];
+                                        final_val = temp_val + a_val * b_val;
+                                        wrapped = final_val & ((1 << `PE_ACCUMULATION_BITWIDTH/2) - 1);
+                                        next_acc_value[i * `PE_ACCUMULATION_BITWIDTH/2 +: `PE_ACCUMULATION_BITWIDTH/2] = wrapped[0 +: `PE_ACCUMULATION_BITWIDTH/2];
+                                    end
+                                end
+                                default: begin
+                                    logic [`PE_INPUT_BITWIDTH - 1:0] a_val = vector_input;
+                                    logic [`PE_INPUT_BITWIDTH - 1:0] b_val = matrix_input;
+                                    logic [`PE_ACCUMULATION_BITWIDTH - 1:0] final_val;
+                                    logic [`PE_ACCUMULATION_BITWIDTH - 1:0] wrapped; 
+
+                                    temp_val[`PE_ACCUMULATION_BITWIDTH - 1:0] = acc_value;
+                                    final_val = temp_val + a_val * b_val;
+                                    wrapped = final_val & ((1 << `PE_ACCUMULATION_BITWIDTH) - 1);
+                                    next_acc_value = wrapped;
+                                end
+                            endcase
                         end
                         `PE_OUT_VALUE: begin
-                            for (int i = 0; i < num_channels; i++) begin
-                                logic [`PE_ACCUMULATION_BITWIDTH - 1:0] vacc_lane_val = acc_value[i * vacc_width +: vacc_width];
-                                next_output_value[i * output_channel_width +: output_channel_width] = vacc_lane_val[0 +: output_channel_width];
-                            end
+                            case (mode)
+                                2'd0: begin
+                                    for (i = 0; i < 4; i++) begin
+                                        logic [`PE_ACCUMULATION_BITWIDTH/4 - 1:0] vacc_lane_val = acc_value[i * `PE_ACCUMULATION_BITWIDTH/4 +: `PE_ACCUMULATION_BITWIDTH/4];
+                                        next_output_value[i * `PE_OUTPUT_BITWIDTH/4 +: `PE_OUTPUT_BITWIDTH/4] = vacc_lane_val[0 +: `PE_OUTPUT_BITWIDTH/4];
+                                    end
+                                end
+                                2'd1: begin
+                                    for (i = 0; i < 2; i++) begin
+                                        logic [`PE_ACCUMULATION_BITWIDTH/2 - 1:0] vacc_lane_val = acc_value[i * `PE_ACCUMULATION_BITWIDTH/2 +: `PE_ACCUMULATION_BITWIDTH/2];
+                                        next_output_value[i * `PE_OUTPUT_BITWIDTH/2 +: `PE_OUTPUT_BITWIDTH/2] = vacc_lane_val[0 +: `PE_OUTPUT_BITWIDTH/2];
+                                    end
+                                end
+                                default: begin
+                                    logic [`PE_ACCUMULATION_BITWIDTH - 1:0] vacc_lane_val = acc_value;
+                                    next_output_value = vacc_lane_val[0 +: `PE_OUTPUT_BITWIDTH];
+                                end
+                            endcase 
                         end
                         `PE_PASS_VALUE: begin
-                            for (int i = 0; i < num_channels; i++) begin
-                                logic [`PE_INPUT_BITWIDTH - 1:0] lane_value = vector_input[i * mode_bitwidth +: mode_bitwidth];
-                                next_acc_value[i * vacc_width +: vacc_width] = lane_value[0 +: mode_bitwidth];
-                            end
+                            case (mode) 
+                                2'd0: begin
+                                    for (i = 0; i < 4; i++) begin
+                                        logic [`PE_INPUT_BITWIDTH/4 - 1:0] lane_value = vector_input[i * 8 +: 8];
+                                        next_acc_value[i * `PE_ACCUMULATION_BITWIDTH/4 +: `PE_ACCUMULATION_BITWIDTH/4] = lane_value[0 +: 8];
+                                    end
+                                end
+                                2'd1: begin
+                                    for (i = 0; i < 2; i++) begin
+                                        logic [`PE_INPUT_BITWIDTH/2 - 1:0] lane_value = vector_input[i * 16 +: 16];
+                                        next_acc_value[i * `PE_ACCUMULATION_BITWIDTH/2 +: `PE_ACCUMULATION_BITWIDTH/2] = lane_value[0 +: 16];
+                                    end
+                                end
+                                default: begin
+                                    logic [`PE_INPUT_BITWIDTH - 1:0] lane_value = vector_input;
+                                    next_acc_value = lane_value;
+                                end
+                            endcase
+                            
                         end
                         `PE_CLR_VALUE: begin
                             next_acc_value = '0;
