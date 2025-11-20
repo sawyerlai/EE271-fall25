@@ -1,0 +1,1681 @@
+
+                           Design Compiler Graphical 
+                                 DC Ultra (TM)
+                                  DFTMAX (TM)
+                              Power Compiler (TM)
+                                 DesignWare (R)
+                                 DC Expert (TM)
+                               Design Vision (TM)
+                               HDL Compiler (TM)
+                               VHDL Compiler (TM)
+                                  DFT Compiler
+                               Design Compiler(R)
+
+              Version S-2021.06-SP5-4 for linux64 - Aug 05, 2022 
+
+                    Copyright (c) 1988 - 2022 Synopsys, Inc.
+   This software and the associated documentation are proprietary to Synopsys,
+ Inc. This software may only be used in accordance with the terms and conditions
+ of a written license agreement with Synopsys, Inc. All other use, reproduction,
+   or distribution of this software is strictly prohibited.  Licensed Products
+     communicate with Synopsys servers for the purpose of providing software
+    updates, detecting software piracy and verifying that customers are using
+    Licensed Products in conformity with the applicable License Key for such
+  Licensed Products. Synopsys will use information gathered in connection with
+    this process to deliver software updates and pursue software pirates and
+                                   infringers.
+
+ Inclusivity & Diversity - Visit SolvNetPlus to read the "Synopsys Statement on
+            Inclusivity and Diversity" (Refer to article 000036315 at
+                        https://solvnetplus.synopsys.com)
+Initializing...
+# Simple synthesis script to use FreePDK/45nm libraries
+file mkdir reports
+file mkdir netlist
+remove_design -all
+1
+define_design_lib FreePDK_45nm -path "FreePDK_45nm"
+1
+set_host_options -max_cores 16
+1
+#####################
+# Config Variables
+#####################
+#####################
+# Path Variables
+#####################
+set SYN  /cad/synopsys/syn/M-2016.12-SP2/libraries/syn/
+/cad/synopsys/syn/M-2016.12-SP2/libraries/syn/
+set OPENCELL_45 ./lib/
+./lib/
+#####################
+# Set Design Library
+#####################
+set link_library [list NangateOpenCellLibrary.db dw_foundation.sldb]
+NangateOpenCellLibrary.db dw_foundation.sldb
+set target_library [list NangateOpenCellLibrary.db]
+NangateOpenCellLibrary.db
+set synthetic_library [list  dw_foundation.sldb]
+dw_foundation.sldb
+set dw_lib     $SYN
+/cad/synopsys/syn/M-2016.12-SP2/libraries/syn/
+set sym_lib    $OPENCELL_45
+./lib/
+set target_lib $OPENCELL_45
+./lib/
+set search_path [list ./ ../rtl/  $dw_lib $target_lib $sym_lib ../params/ ]
+./ ../rtl/ /cad/synopsys/syn/M-2016.12-SP2/libraries/syn/ ./lib/ ./lib/ ../params/
+###################
+# Read Design
+###################
+set file_list [list \
+    ./defines.sv \
+    ../logical/buffer.sv \
+    ../logical/controller.sv \
+    ../logical/instruction_memory.sv \
+    ../logical/processing_element.sv \
+    ../logical/top.sv \
+    ./macros/array.sv \
+]
+./defines.sv ../logical/buffer.sv ../logical/controller.sv ../logical/instruction_memory.sv ../logical/processing_element.sv ../logical/top.sv ./macros/array.sv
+analyze -library FreePDK_45nm -format sverilog $file_list
+Running PRESTO HDLC
+Compiling source file ./defines.sv
+Compiling source file ../logical/buffer.sv
+Opening include file defines.sv
+Compiling source file ../logical/controller.sv
+Opening include file defines.sv
+Warning:  ../logical/controller.sv:22: Using default enum base size of 32. (VER-533)
+Compiling source file ../logical/instruction_memory.sv
+Compiling source file ../logical/processing_element.sv
+Opening include file defines.sv
+Compiling source file ../logical/top.sv
+Opening include file defines.sv
+Compiling source file ./macros/array.sv
+Presto compilation completed successfully.
+Loading db file '/home/users/adamco27/assignment2-fall-2025/unoptimized_verilog/synth/lib/NangateOpenCellLibrary.db'
+Information: Using CCS timing libraries. (TIM-024)
+Loading db file '/cad/synopsys/syn/S-2021.06-SP5-4/libraries/syn/dw_foundation.sldb'
+1
+elaborate ${DESIGN_TARGET} -architecture verilog -library FreePDK_45nm
+Loading db file '/cad/synopsys/syn/S-2021.06-SP5-4/libraries/syn/gtech.db'
+Loading db file '/cad/synopsys/syn/S-2021.06-SP5-4/libraries/syn/standard.sldb'
+  Loading link library 'NangateOpenCellLibrary'
+  Loading link library 'gtech'
+Running PRESTO HDLC
+Presto compilation completed successfully. (top)
+Elaborated 1 design.
+Current design is now 'top'.
+Information: Building the design 'instruction_memory'. (HDL-193)
+
+Inferred memory devices in process
+	in routine instruction_memory line 39 in file
+		'../logical/instruction_memory.sv'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+| program_counter_reg | Flip-flop |   7   |  Y  | N  | Y  | N  | N  | N  | N  |
+===============================================================================
+Presto compilation completed successfully. (instruction_memory)
+Information: Building the design 'controller'. (HDL-193)
+
+Statistics for case statements in always block at line 34 in file
+	'../logical/controller.sv'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|            49            |    auto/auto     |
+===============================================
+
+Inferred memory devices in process
+	in routine controller line 34 in file
+		'../logical/controller.sv'.
+================================================================================
+|    Register Name     |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+================================================================================
+|   memb_inc_reg_reg   | Flip-flop |   1   |  N  | N  | Y  | N  | N  | N  | N  |
+|      state_reg       | Flip-flop |  32   |  Y  | N  | Y  | N  | N  | N  | N  |
+| inst_exec_begins_reg | Flip-flop |   1   |  N  | N  | Y  | N  | N  | N  | N  |
+|     pe_inst_reg      | Flip-flop |   9   |  Y  | N  | Y  | N  | N  | N  | N  |
+|  pe_inst_valid_reg   | Flip-flop |   1   |  N  | N  | Y  | N  | N  | N  | N  |
+|     buf_inst_reg     | Flip-flop |  36   |  Y  | N  | Y  | N  | N  | N  | N  |
+|  buf_inst_valid_reg  | Flip-flop |   1   |  N  | N  | Y  | N  | N  | N  | N  |
+|      count_reg       | Flip-flop |  16   |  Y  | N  | Y  | N  | N  | N  | N  |
+| mema_offset_reg_reg  | Flip-flop |  16   |  Y  | N  | Y  | N  | N  | N  | N  |
+| memb_offset_reg_reg  | Flip-flop |  16   |  Y  | N  | Y  | N  | N  | N  | N  |
+|   mema_inc_reg_reg   | Flip-flop |   1   |  N  | N  | Y  | N  | N  | N  | N  |
+================================================================================
+Presto compilation completed successfully. (controller)
+Information: Building the design 'buffer'. (HDL-193)
+
+Inferred memory devices in process
+	in routine buffer line 41 in file
+		'../logical/buffer.sv'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|   offset_reg_reg    | Flip-flop |  16   |  Y  | N  | Y  | N  | N  | N  | N  |
+===============================================================================
+Presto compilation completed successfully. (buffer)
+Information: Building the design 'processing_element'. (HDL-193)
+Warning:  ../logical/processing_element.sv:64: signed to unsigned assignment occurs. (VER-318)
+Warning:  ../logical/processing_element.sv:77: signed to unsigned part selection occurs. (VER-318)
+Warning:  ../logical/processing_element.sv:79: signed to unsigned part selection occurs. (VER-318)
+Warning:  ../logical/processing_element.sv:84: signed to unsigned part selection occurs. (VER-318)
+Warning:  ../logical/processing_element.sv:86: signed to unsigned part selection occurs. (VER-318)
+Warning:  ../logical/processing_element.sv:101: unsigned to signed assignment occurs. (VER-318)
+Warning:  ../logical/processing_element.sv:102: unsigned to signed assignment occurs. (VER-318)
+Warning:  ../logical/processing_element.sv:104: signed to unsigned part selection occurs. (VER-318)
+Warning:  ../logical/processing_element.sv:107: signed to unsigned part selection occurs. (VER-318)
+Warning:  ../logical/processing_element.sv:112: unsigned to signed assignment occurs. (VER-318)
+Warning:  ../logical/processing_element.sv:113: unsigned to signed assignment occurs. (VER-318)
+Warning:  ../logical/processing_element.sv:115: signed to unsigned part selection occurs. (VER-318)
+Warning:  ../logical/processing_element.sv:118: signed to unsigned part selection occurs. (VER-318)
+Warning:  ../logical/processing_element.sv:122: unsigned to signed assignment occurs. (VER-318)
+Warning:  ../logical/processing_element.sv:123: unsigned to signed assignment occurs. (VER-318)
+Warning:  ../logical/processing_element.sv:135: signed to unsigned part selection occurs. (VER-318)
+Warning:  ../logical/processing_element.sv:136: signed to unsigned part selection occurs. (VER-318)
+Warning:  ../logical/processing_element.sv:141: signed to unsigned part selection occurs. (VER-318)
+Warning:  ../logical/processing_element.sv:142: signed to unsigned part selection occurs. (VER-318)
+Warning:  ../logical/processing_element.sv:155: unsigned to signed assignment occurs. (VER-318)
+Warning:  ../logical/processing_element.sv:157: signed to unsigned part selection occurs. (VER-318)
+Warning:  ../logical/processing_element.sv:162: unsigned to signed assignment occurs. (VER-318)
+Warning:  ../logical/processing_element.sv:164: signed to unsigned part selection occurs. (VER-318)
+Warning:  ../logical/processing_element.sv:168: unsigned to signed assignment occurs. (VER-318)
+
+Statistics for case statements in always block at line 60 in file
+	'../logical/processing_element.sv'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|            72            |    auto/auto     |
+|            74            |    auto/auto     |
+|            96            |    auto/auto     |
+|            98            |    auto/auto     |
+|           132            |    auto/auto     |
+|           152            |    auto/auto     |
+===============================================
+
+Inferred memory devices in process
+	in routine processing_element line 188 in file
+		'../logical/processing_element.sv'.
+================================================================================
+|    Register Name     |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+================================================================================
+| pe_inst_valid_ff_reg | Flip-flop |   1   |  N  | N  | Y  | N  | N  | N  | N  |
+|    acc_value_reg     | Flip-flop |  64   |  Y  | N  | Y  | N  | N  | N  | N  |
+|   output_value_reg   | Flip-flop |  32   |  Y  | N  | Y  | N  | N  | N  | N  |
+|    pe_inst_ff_reg    | Flip-flop |   9   |  Y  | N  | Y  | N  | N  | N  | N  |
+================================================================================
+Presto compilation completed successfully. (processing_element)
+Information: Building the design 'array' instantiated from design 'instruction_memory' with
+	the parameters "DW=63,NW=128,AW=7". (HDL-193)
+Presto compilation completed successfully. (array_DW63_NW128_AW7)
+Information: Building the design 'array' instantiated from design 'buffer' with
+	the parameters "DW=512,NW=65536,AW=16". (HDL-193)
+Presto compilation completed successfully. (array_DW512_NW65536_AW16)
+Information: Building the design 'vector_decoder'. (HDL-193)
+
+Statistics for case statements in always block at line 95 in file
+	'./defines.sv'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|            96            |     no/auto      |
+|            99            |    auto/auto     |
+|           108            |    auto/auto     |
+===============================================
+
+Inferred memory devices in process
+	in routine vector_decoder line 95 in file
+		'./defines.sv'.
+===========================================================================
+|    Register Name    | Type  | Width | Bus | MB | AR | AS | SR | SS | ST |
+===========================================================================
+|   data_to_pe_reg    | Latch |  32   |  Y  | N  | N  | N  | -  | -  | -  |
+|   addr_to_mem_reg   | Latch |  14   |  Y  | N  | N  | N  | -  | -  | -  |
+===========================================================================
+Warning:  ./defines.sv:95: Netlist for always_comb block contains a latch. (ELAB-974)
+Presto compilation completed successfully. (vector_decoder)
+Information: Building the design 'array' instantiated from design 'buffer' with
+	the parameters "DW=32,NW=16384,AW=14". (HDL-193)
+Presto compilation completed successfully. (array_DW32_NW16384_AW14)
+Information: Building the design 'array' instantiated from design 'buffer' with
+	the parameters "DW=512,NW=65536,AW=16,INITIALIZE_MEMORY=1". (HDL-193)
+Presto compilation completed successfully. (array_DW512_NW65536_AW16_INITIALIZE_MEMORY1)
+1
+link
+
+  Linking design 'top'
+  Using the following designs and libraries:
+  --------------------------------------------------------------------------
+  NangateOpenCellLibrary (library) /home/users/adamco27/assignment2-fall-2025/unoptimized_verilog/synth/lib/NangateOpenCellLibrary.db
+  dw_foundation.sldb (library) /cad/synopsys/syn/S-2021.06-SP5-4/libraries/syn/dw_foundation.sldb
+
+1
+##################################
+# Constraints File
+##################################
+set CLK  "clk"
+clk
+set RST  "rst_n"
+rst_n
+create_clock $CLK -period $CLK_PERIOD
+1
+set_wire_load_model -name 1K_hvratio_1_4
+1
+set_wire_load_mode top
+1
+set_max_fanout 4.0 [get_ports "*" -filter {@port_direction != out} ]
+1
+set all_inputs_wo_rst_clk [remove_from_collection [remove_from_collection [all_inputs] [get_port $CLK]] [get_port $RST]]
+{instruction_count[6] instruction_count[5] instruction_count[4] instruction_count[3] instruction_count[2] instruction_count[1] instruction_count[0]}
+set_input_delay -clock $CLK [ expr $CLK_PERIOD*3/4 ] $all_inputs_wo_rst_clk
+1
+set_driving_cell -lib_cell "INV_X1" -pin "ZN" [ get_ports "*" -filter {@port_direction == in} ]
+Warning: Design rule attributes from the driving cell will be set on the port 'instruction_count[6]'. (UID-401)
+Warning: Design rule attributes from the driving cell will be set on the port 'instruction_count[5]'. (UID-401)
+Warning: Design rule attributes from the driving cell will be set on the port 'instruction_count[4]'. (UID-401)
+Warning: Design rule attributes from the driving cell will be set on the port 'instruction_count[3]'. (UID-401)
+Warning: Design rule attributes from the driving cell will be set on the port 'instruction_count[2]'. (UID-401)
+Warning: Design rule attributes from the driving cell will be set on the port 'instruction_count[1]'. (UID-401)
+Warning: Design rule attributes from the driving cell will be set on the port 'instruction_count[0]'. (UID-401)
+Warning: Design rule attributes from the driving cell will be set on the port 'clk'. (UID-401)
+Warning: Design rule attributes from the driving cell will be set on the port 'rst_n'. (UID-401)
+1
+set_input_delay -clock $CLK 0 instruction_count
+1
+set_max_area $TARGET_AREA
+1
+remove_driving_cell $RST
+1
+set_drive 0 $RST
+1
+set_dont_touch_network $RST
+1
+##########################################
+# Synthesize Design (Optimize for Timing)
+##########################################
+set_optimize_registers true -design ${DESIGN_TARGET}
+1
+compile_ultra -retime -timing_high_effort_script
+Warning: The -timing_high_effort_script option is ignored.  (OPT-1342)
+Information: Performing power optimization. (PWR-850)
+Analyzing: "/home/users/adamco27/assignment2-fall-2025/unoptimized_verilog/synth/lib/NangateOpenCellLibrary.db"
+Library analysis succeeded.
+Information: Running optimization using a maximum of 16 cores. (OPT-1500)
+Information: Evaluating DesignWare library utilization. (UISN-27)
+
+============================================================================
+| DesignWare Building Block Library  |         Version         | Available |
+============================================================================
+| Basic DW Building Blocks           | S-2021.06-DWBB_202106.5 |     *     |
+| Licensed DW Building Blocks        | S-2021.06-DWBB_202106.5 |     *     |
+============================================================================
+
+============================================================================
+| Flow Information                                                         |
+----------------------------------------------------------------------------
+| Flow         | Design Compiler WLM                                       |
+============================================================================
+| Design Information                                      | Value          |
+============================================================================
+| Number of Scenarios                                     | 0              |
+| Leaf Cell Count                                         | 4104           |
+| Number of User Hierarchies                              | 20             |
+| Sequential Cell Count                                   | 1895           |
+| Macro Count                                             | 0              |
+| Number of Power Domains                                 | 0              |
+| Design with UPF Data                                    | false          |
+============================================================================
+Information: Sequential output inversion is enabled.  SVF file must be used for formal verification. (OPT-1208)
+Information: Retiming is enabled. SVF file must be used for formal verification. (OPT-1210)
+
+Information: There are 25 potential problems in your design. Please run 'check_design' for more information. (LINT-99)
+
+Information: Uniquified 16 instances of design 'processing_element'. (OPT-1056)
+  Simplifying Design 'top'
+Information: The register 'u_buffer/offset_reg_reg[2]' will be removed. (OPT-1207)
+Information: The register 'u_buffer/offset_reg_reg[3]' will be removed. (OPT-1207)
+Information: The register 'u_buffer/offset_reg_reg[4]' will be removed. (OPT-1207)
+Information: The register 'u_buffer/offset_reg_reg[5]' will be removed. (OPT-1207)
+Information: The register 'u_buffer/offset_reg_reg[6]' will be removed. (OPT-1207)
+Information: The register 'u_buffer/offset_reg_reg[7]' will be removed. (OPT-1207)
+Information: The register 'u_buffer/offset_reg_reg[8]' will be removed. (OPT-1207)
+Information: The register 'u_buffer/offset_reg_reg[9]' will be removed. (OPT-1207)
+Information: The register 'u_buffer/offset_reg_reg[10]' will be removed. (OPT-1207)
+Information: The register 'u_buffer/offset_reg_reg[11]' will be removed. (OPT-1207)
+Information: The register 'u_buffer/offset_reg_reg[12]' will be removed. (OPT-1207)
+Information: The register 'u_buffer/offset_reg_reg[13]' will be removed. (OPT-1207)
+Information: The register 'u_buffer/offset_reg_reg[14]' will be removed. (OPT-1207)
+Information: The register 'u_buffer/offset_reg_reg[15]' will be removed. (OPT-1207)
+
+Loaded alib file './alib-52/NangateOpenCellLibrary.db.alib'
+  Building model 'DW01_NAND2'
+Information: Ungrouping hierarchy u_instruction_memory before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy u_controller before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy u_buffer before Pass 1 (OPT-776)
+Information: Ungrouping hierarchy u_buffer/vector_decoder_inst before Pass 1 (OPT-776)
+Information: Ungrouping 4 of 21 hierarchies before Pass 1 (OPT-775)
+Information: State dependent leakage is now switched from on to off.
+
+  Beginning Pass 1 Mapping
+  ------------------------
+  Processing 'top'
+Information: The register 'u_controller/state_reg[1]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_controller/state_reg[2]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_controller/state_reg[3]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_controller/state_reg[4]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_controller/state_reg[5]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_controller/state_reg[6]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_controller/state_reg[7]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_controller/state_reg[8]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_controller/state_reg[9]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_controller/state_reg[10]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_controller/state_reg[11]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_controller/state_reg[12]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_controller/state_reg[13]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_controller/state_reg[14]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_controller/state_reg[15]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_controller/state_reg[16]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_controller/state_reg[17]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_controller/state_reg[18]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_controller/state_reg[19]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_controller/state_reg[20]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_controller/state_reg[21]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_controller/state_reg[22]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_controller/state_reg[23]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_controller/state_reg[24]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_controller/state_reg[25]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_controller/state_reg[26]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_controller/state_reg[27]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_controller/state_reg[28]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_controller/state_reg[29]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_controller/state_reg[30]' is a constant and will be removed. (OPT-1206)
+Information: The register 'u_controller/state_reg[31]' is a constant and will be removed. (OPT-1206)
+ Implement Synthetic for 'top'.
+Information: Added key list 'DesignWare' to design 'top'. (DDB-72)
+  Processing 'processing_element_0'
+ Implement Synthetic for 'processing_element_0'.
+Information: Added key list 'DesignWare' to design 'processing_element_0'. (DDB-72)
+
+  Updating timing information
+Information: Updating design information... (UID-85)
+Information: In design 'top', the register 'u_controller/mema_offset_reg_reg[0]' is removed because it is merged to 'u_controller/buf_inst_reg[mema_offset][0]'. (OPT-1215)
+Information: In design 'top', the register 'u_controller/mema_offset_reg_reg[1]' is removed because it is merged to 'u_controller/buf_inst_reg[mema_offset][1]'. (OPT-1215)
+Information: In design 'top', the register 'u_controller/mema_offset_reg_reg[2]' is removed because it is merged to 'u_controller/buf_inst_reg[mema_offset][2]'. (OPT-1215)
+Information: In design 'top', the register 'u_controller/mema_offset_reg_reg[3]' is removed because it is merged to 'u_controller/buf_inst_reg[mema_offset][3]'. (OPT-1215)
+Information: In design 'top', the register 'u_controller/mema_offset_reg_reg[4]' is removed because it is merged to 'u_controller/buf_inst_reg[mema_offset][4]'. (OPT-1215)
+Information: In design 'top', the register 'u_controller/mema_offset_reg_reg[5]' is removed because it is merged to 'u_controller/buf_inst_reg[mema_offset][5]'. (OPT-1215)
+Information: In design 'top', the register 'u_controller/mema_offset_reg_reg[6]' is removed because it is merged to 'u_controller/buf_inst_reg[mema_offset][6]'. (OPT-1215)
+Information: In design 'top', the register 'u_controller/mema_offset_reg_reg[7]' is removed because it is merged to 'u_controller/buf_inst_reg[mema_offset][7]'. (OPT-1215)
+Information: In design 'top', the register 'u_controller/mema_offset_reg_reg[8]' is removed because it is merged to 'u_controller/buf_inst_reg[mema_offset][8]'. (OPT-1215)
+Information: In design 'top', the register 'u_controller/mema_offset_reg_reg[9]' is removed because it is merged to 'u_controller/buf_inst_reg[mema_offset][9]'. (OPT-1215)
+Information: In design 'top', the register 'u_controller/mema_offset_reg_reg[10]' is removed because it is merged to 'u_controller/buf_inst_reg[mema_offset][10]'. (OPT-1215)
+Information: In design 'top', the register 'u_controller/mema_offset_reg_reg[11]' is removed because it is merged to 'u_controller/buf_inst_reg[mema_offset][11]'. (OPT-1215)
+Information: In design 'top', the register 'u_controller/mema_offset_reg_reg[12]' is removed because it is merged to 'u_controller/buf_inst_reg[mema_offset][12]'. (OPT-1215)
+Information: In design 'top', the register 'u_controller/mema_offset_reg_reg[13]' is removed because it is merged to 'u_controller/buf_inst_reg[mema_offset][13]'. (OPT-1215)
+Information: In design 'top', the register 'u_controller/mema_offset_reg_reg[14]' is removed because it is merged to 'u_controller/buf_inst_reg[mema_offset][14]'. (OPT-1215)
+Information: In design 'top', the register 'u_controller/mema_offset_reg_reg[15]' is removed because it is merged to 'u_controller/buf_inst_reg[mema_offset][15]'. (OPT-1215)
+Information: In design 'top', the register 'u_controller/memb_offset_reg_reg[0]' is removed because it is merged to 'u_controller/buf_inst_reg[memb_offset][0]'. (OPT-1215)
+Information: In design 'top', the register 'u_controller/memb_offset_reg_reg[1]' is removed because it is merged to 'u_controller/buf_inst_reg[memb_offset][1]'. (OPT-1215)
+Information: In design 'top', the register 'u_controller/memb_offset_reg_reg[2]' is removed because it is merged to 'u_controller/buf_inst_reg[memb_offset][2]'. (OPT-1215)
+Information: In design 'top', the register 'u_controller/memb_offset_reg_reg[3]' is removed because it is merged to 'u_controller/buf_inst_reg[memb_offset][3]'. (OPT-1215)
+Information: In design 'top', the register 'u_controller/memb_offset_reg_reg[4]' is removed because it is merged to 'u_controller/buf_inst_reg[memb_offset][4]'. (OPT-1215)
+Information: In design 'top', the register 'u_controller/memb_offset_reg_reg[5]' is removed because it is merged to 'u_controller/buf_inst_reg[memb_offset][5]'. (OPT-1215)
+Information: In design 'top', the register 'u_controller/memb_offset_reg_reg[6]' is removed because it is merged to 'u_controller/buf_inst_reg[memb_offset][6]'. (OPT-1215)
+Information: In design 'top', the register 'u_controller/memb_offset_reg_reg[7]' is removed because it is merged to 'u_controller/buf_inst_reg[memb_offset][7]'. (OPT-1215)
+Information: In design 'top', the register 'u_controller/memb_offset_reg_reg[8]' is removed because it is merged to 'u_controller/buf_inst_reg[memb_offset][8]'. (OPT-1215)
+Information: In design 'top', the register 'u_controller/memb_offset_reg_reg[9]' is removed because it is merged to 'u_controller/buf_inst_reg[memb_offset][9]'. (OPT-1215)
+Information: In design 'top', the register 'u_controller/memb_offset_reg_reg[10]' is removed because it is merged to 'u_controller/buf_inst_reg[memb_offset][10]'. (OPT-1215)
+Information: In design 'top', the register 'u_controller/memb_offset_reg_reg[11]' is removed because it is merged to 'u_controller/buf_inst_reg[memb_offset][11]'. (OPT-1215)
+Information: In design 'top', the register 'u_controller/memb_offset_reg_reg[12]' is removed because it is merged to 'u_controller/buf_inst_reg[memb_offset][12]'. (OPT-1215)
+Information: In design 'top', the register 'u_controller/memb_offset_reg_reg[13]' is removed because it is merged to 'u_controller/buf_inst_reg[memb_offset][13]'. (OPT-1215)
+Information: In design 'top', the register 'u_controller/memb_offset_reg_reg[14]' is removed because it is merged to 'u_controller/buf_inst_reg[memb_offset][14]'. (OPT-1215)
+Information: In design 'top', the register 'u_controller/memb_offset_reg_reg[15]' is removed because it is merged to 'u_controller/buf_inst_reg[memb_offset][15]'. (OPT-1215)
+
+  Beginning Mapping Optimizations  (Ultra High effort)
+  -------------------------------
+Information: Checking pipeline property of design top. (RTDC-137)
+Information: Pipeline detection aborted. Reason: cell pe_gen[15].u_pe/acc_value_reg[63] is on a feedback loop. (RTDC-138)
+Information: Aborted pipeline detection on design top. (RTDC-140)
+  Mapping Optimization (Phase 1)
+Information: Checkpoint guidance is generated in the .svf file. (INFO-122)
+Warning: Retiming is likely to run for an extended
+	period of time due to the large design size. (RTDC-135)
+  Retiming top (top)
+Warning: A black box cell u_buffer/u_matrix_mem is 	found on the clock tree.  (RTDC-103)
+Warning: A black box cell u_buffer/u_vector_mem is 	found on the clock tree.  (RTDC-103)
+Warning: A black box cell u_instruction_memory/u_instruction_memory is 	found on the clock tree.  (RTDC-103)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[31]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[30]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[29]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[28]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[27]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[26]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[25]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[24]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[23]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[22]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[21]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[20]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[19]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[18]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[17]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[16]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[15]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[14]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[13]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[12]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[11]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[10]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[9]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[8]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[7]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[6]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[5]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[4]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[3]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[2]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[1]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/data_to_pe_reg[0]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/addr_to_mem_reg[13]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/addr_to_mem_reg[12]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/addr_to_mem_reg[11]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/addr_to_mem_reg[10]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/addr_to_mem_reg[9]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/addr_to_mem_reg[8]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/addr_to_mem_reg[7]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/addr_to_mem_reg[6]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/addr_to_mem_reg[5]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/addr_to_mem_reg[4]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/addr_to_mem_reg[3]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/addr_to_mem_reg[2]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/addr_to_mem_reg[1]'. (RTDC-5)
+Warning: No clock net driving clock pin of cell 'u_buffer/vector_decoder_inst/addr_to_mem_reg[0]'. (RTDC-5)
+  Preferred flip-flop is DFFS_X1 with setup = 0.04
+
+Warning: Cell 'u_buffer/u_matrix_mem' has no timing information. Treating it 
+	like an external module. (RTDC-32)
+Warning: Cell 'u_buffer/u_vector_mem' has no timing information. Treating it 
+	like an external module. (RTDC-32)
+Warning: Cell 'u_instruction_memory/u_instruction_memory' has no timing information. Treating it 
+	like an external module. (RTDC-32)
+Warning: The following cells only drive
+	asynchronous pins of sequential cells which have no
+	timing constraint. Therefore retiming will not optimize
+	delay through them:
+	pe_gen[0].u_pe/U20 (INV_X1)
+	pe_gen[1].u_pe/U20 (INV_X1)
+	pe_gen[2].u_pe/U20 (INV_X1)
+	pe_gen[3].u_pe/U20 (INV_X1)
+	pe_gen[4].u_pe/U20 (INV_X1)
+	pe_gen[5].u_pe/U20 (INV_X1)
+	pe_gen[6].u_pe/U20 (INV_X1)
+	pe_gen[7].u_pe/U20 (INV_X1)
+	pe_gen[8].u_pe/U20 (INV_X1)
+	pe_gen[9].u_pe/U20 (INV_X1)
+	pe_gen[10].u_pe/U20 (INV_X1)
+	pe_gen[11].u_pe/U20 (INV_X1)
+	pe_gen[12].u_pe/U20 (INV_X1)
+	pe_gen[13].u_pe/U20 (INV_X1)
+	pe_gen[14].u_pe/U20 (INV_X1)
+	pe_gen[15].u_pe/U20 (INV_X1)
+	U155 (INV_X1)
+
+ (RTDC-115)
+
+  Retiming base-clock clk, rising edge.
+  Beginning minimum period retiming ...
+  ... minimum period retiming done.
+  Beginning minimum area retiming step 1 ...
+  ... minimum area retiming step 1 done.
+  Beginning minimum area retiming step 2 ...
+  5% 10% 15% 20% 25% 30% 35% 40% 45% 50% 55% 60% 65% 70% 75% 80% 85% 90% 95% 100% 
+  ... minimum area retiming step 2 done.
+  Beginning minimum area retiming step 3 ...
+  10%   ... minimum area retiming step 1 done.
+  Beginning minimum area retiming step 2 ...
+  5% 10% 15% 20% 25% 30% 35% 40% 45% 50% 55% 60% 65% 70% 75% 80% 85% 90% 95% 100% 
+  ... minimum area retiming step 2 done.
+  Beginning minimum area retiming step 3 ...
+  10% 20% 30% 40% 50% 60% 70% 80% 90% ... 100% 
+  ... minimum area retiming step 3 done.
+  Beginning final register move ...
+  ... final register move done.
+  Beginning minimum period retiming ...
+  ... minimum period retiming done.
+  Beginning minimum area retiming step 1 ...
+  ... minimum area retiming step 1 done.
+  Beginning minimum area retiming step 2 ...
+  5% 10% 15% 20% 25% 30% 35% 40% 45% 50% 55% 60% 65% 70% 75% 80% 85% 90% 95% 100% 
+  ... minimum area retiming step 2 done.
+  Beginning minimum area retiming step 3 ...
+  10%   ... minimum area retiming step 1 done.
+  Beginning minimum area retiming step 2 ...
+  5% 10% 15% 20% 25% 30% 35% 40% 45% 50% 55% 60% 65% 70% 75% 80% 85% 90% 95% 100% 
+  ... minimum area retiming step 2 done.
+  Beginning minimum area retiming step 3 ...
+  10% 20% 30% 40% 50% 60% 70% 80% 90% ... 100% 
+  ... minimum area retiming step 3 done.
+  Beginning final register move ...
+  ... final register move done.
+Warning: QoR may not be optimal with medium justification effort. (RTDC-133)
+  Lower bound estimate = 2.50
+  Critical path length = 2.50
+  Clock correction = 0.13 (clock-to-Q delay = 0.09, setup = 0.04, uncertainty = 0.00)
+  Mapping Optimization (Phase 2)
+
+                                  TOTAL                                                
+   ELAPSED            WORST NEG   SETUP    DESIGN                              LEAKAGE 
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT            POWER  
+  --------- --------- --------- --------- --------- ------------------------- ---------
+    0:54:16  336624.6      0.71     787.3    3359.4 pe_gen[12].u_pe/clk_r_REG440_S23/D 11917715.0000
+    0:54:16  336624.6      0.71     787.3    3359.4 pe_gen[12].u_pe/clk_r_REG440_S23/D 11917715.0000
+    0:54:18  336548.8      0.69     716.8    3670.2 pe_gen[2].u_pe/DP_OP_69J1_127_6767/clk_r_REG1366_S20/D 11911936.0000
+    0:54:19  336639.5      0.68     713.6    3758.9 pe_gen[12].u_pe/clk_r_REG440_S23/D 11915071.0000
+    0:54:21  336702.0      0.67     711.9    3847.7 pe_gen[2].u_pe/DP_OP_69J1_127_6767/clk_r_REG1366_S20/D 11916880.0000
+    0:54:22  336749.1      0.67     701.6    3847.7 pe_gen[7].u_pe/clk_r_REG908_S24/D 11917596.0000
+    0:54:24  336754.9      0.66     694.7    3892.1 pe_gen[9].u_pe/clk_r_REG719_S20/D 11917143.0000
+    0:54:26  336813.7      0.66     692.2    3892.1 pe_gen[8].u_pe/clk_r_REG803_S20/D 11918929.0000
+    0:54:27  336872.2      0.66     691.7    3936.5 pe_gen[3].u_pe/DP_OP_68J1_126_6767/clk_r_REG1305_S39/D 11920719.0000
+    0:54:29  336872.8      0.66     686.7    3892.1                           11920363.0000
+    0:54:36  336403.8      0.88     725.1    3892.1                           11911157.0000
+
+  Beginning Constant Register Removal
+  -----------------------------------
+    0:54:41  337160.3      1.49    1253.0    3892.1                           11950887.0000
+    0:54:48  337029.7      1.49    1254.2    3892.1                           11948603.0000
+
+  Beginning Global Optimizations
+  ------------------------------
+  Numerical Synthesis (Phase 1)
+  Numerical Synthesis (Phase 2)
+  Global Optimization (Phase 1)
+  Global Optimization (Phase 2)
+  Global Optimization (Phase 3)
+  Global Optimization (Phase 4)
+  Global Optimization (Phase 5)
+  Global Optimization (Phase 6)
+  Global Optimization (Phase 7)
+  Global Optimization (Phase 8)
+  Global Optimization (Phase 9)
+  Global Optimization (Phase 10)
+  Global Optimization (Phase 11)
+  Global Optimization (Phase 12)
+  Global Optimization (Phase 13)
+  Global Optimization (Phase 14)
+  Global Optimization (Phase 15)
+  Global Optimization (Phase 16)
+  Global Optimization (Phase 17)
+  Global Optimization (Phase 18)
+  Global Optimization (Phase 19)
+  Global Optimization (Phase 20)
+  Global Optimization (Phase 21)
+  Global Optimization (Phase 22)
+  Global Optimization (Phase 23)
+  Global Optimization (Phase 24)
+  Global Optimization (Phase 25)
+  Global Optimization (Phase 26)
+  Global Optimization (Phase 27)
+  Global Optimization (Phase 28)
+  Global Optimization (Phase 29)
+  Global Optimization (Phase 30)
+  Global Optimization (Phase 31)
+  Global Optimization (Phase 32)
+  Global Optimization (Phase 33)
+  Global Optimization (Phase 34)
+  Global Optimization (Phase 35)
+
+  Beginning Isolate Ports
+  -----------------------
+
+  Beginning Delay Optimization
+  ----------------------------
+    0:56:48  162430.5      0.74     193.0    2534.2                           3641109.2500
+    0:56:52  163921.4      0.52     141.2    2534.2                           3695695.2500
+    0:56:52  163921.4      0.52     141.2    2534.2                           3695695.2500
+    0:56:53  163922.0      0.52     141.2    2534.2                           3695735.0000
+    0:57:23  163746.1      0.52     138.4    2534.2                           3691606.5000
+    0:57:36  158445.0      0.54     141.1    6635.9                           3557903.0000
+
+  Beginning WLM Backend Optimization
+  --------------------------------------
+    0:58:13  158015.4      0.54     139.5    6597.8                           3527450.2500
+    0:58:21  157605.3      0.54     138.3    6486.8                           3501804.7500
+    0:58:29  157157.3      0.54     138.2    6218.3                           3474967.7500
+    0:58:35  156389.9      0.54     136.1    5776.8                           3445228.2500
+    0:58:39  155562.4      0.53     134.1    5359.4                           3415228.7500
+    0:58:44  154699.0      0.53     132.3    4871.3                           3383520.5000
+    0:59:02  153790.0      0.53     132.6    4851.0                           3348098.2500
+    0:59:10  153155.9      0.53     132.7    4545.9                           3325684.7500
+    0:59:14  152963.8      0.53     132.5    4524.4                           3319120.7500
+    0:59:17  152922.9      0.52     129.3    4524.4                           3316807.0000
+    0:59:17  152921.5      0.52     129.2    4524.4                           3316720.5000
+    0:59:18  152921.5      0.52     129.2    4524.4                           3316720.5000
+    0:59:42  150933.7      0.52     127.7    4415.1                           3177012.0000
+    0:59:42  150933.7      0.52     127.7    4415.1                           3177012.0000
+    0:59:59  154626.9      0.03       0.8    4575.3                           3310386.0000
+    1:00:00  154626.9      0.03       0.8    4575.3                           3310386.0000
+    1:00:00  154633.0      0.03       0.7    4575.3                           3310626.7500
+    1:00:00  154633.0      0.03       0.7    4575.3                           3310626.7500
+    1:00:00  154633.0      0.03       0.7    4575.3                           3310626.7500
+    1:00:00  154633.0      0.03       0.7    4575.3                           3310626.7500
+    1:00:01  154745.2      0.00       0.0    4526.4                           3314510.5000
+    1:00:01  154745.2      0.00       0.0    4526.4                           3314510.5000
+    1:00:01  154745.2      0.00       0.0    4526.4                           3314510.5000
+    1:00:01  154745.2      0.00       0.0    4526.4                           3314510.5000
+    1:00:01  154745.2      0.00       0.0    4526.4                           3314510.5000
+    1:00:01  154745.2      0.00       0.0    4526.4                           3314510.5000
+    1:00:01  154745.2      0.00       0.0    4526.4                           3314510.5000
+    1:00:01  154745.2      0.00       0.0    4526.4                           3314510.5000
+    1:00:01  154745.2      0.00       0.0    4526.4                           3314510.5000
+    1:00:01  154745.2      0.00       0.0    4526.4                           3314510.5000
+    1:00:01  154745.2      0.00       0.0    4526.4                           3314510.5000
+
+
+  Beginning Design Rule Fixing  (max_transition)  (max_fanout)  (max_capacitance)
+  ----------------------------
+
+                                  TOTAL                                                
+   ELAPSED            WORST NEG   SETUP    DESIGN                              LEAKAGE 
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT            POWER  
+  --------- --------- --------- --------- --------- ------------------------- ---------
+    1:00:01  154745.2      0.00       0.0    4526.4                           3314510.5000
+  Global Optimization (Phase 36)
+  Global Optimization (Phase 37)
+  Global Optimization (Phase 38)
+    1:00:10  154991.3      0.00       0.0     221.0                           3322182.7500
+    1:00:10  154991.3      0.00       0.0     221.0                           3322182.7500
+
+
+  Beginning Leakage Power Optimization  (max_leakage_power 0)
+  ------------------------------------
+
+                                  TOTAL                                                
+   ELAPSED            WORST NEG   SETUP    DESIGN                              LEAKAGE 
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT            POWER  
+  --------- --------- --------- --------- --------- ------------------------- ---------
+    1:00:10  154991.3      0.00       0.0     221.0                           3322182.7500
+  Global Optimization (Phase 39)
+  Global Optimization (Phase 40)
+  Global Optimization (Phase 41)
+  Global Optimization (Phase 42)
+  Global Optimization (Phase 43)
+  Global Optimization (Phase 44)
+  Global Optimization (Phase 45)
+  Global Optimization (Phase 46)
+  Global Optimization (Phase 47)
+  Global Optimization (Phase 48)
+  Global Optimization (Phase 49)
+  Global Optimization (Phase 50)
+  Global Optimization (Phase 51)
+  Global Optimization (Phase 52)
+  Global Optimization (Phase 53)
+  Global Optimization (Phase 54)
+    1:00:39  151934.1      0.00       0.0     230.8                           3188226.5000
+    1:00:39  151934.1      0.00       0.0     230.8                           3188226.5000
+    1:00:40  151934.1      0.00       0.0     230.8                           3188226.5000
+    1:00:50  151922.2      0.00       0.0     230.8                           3187461.0000
+    1:00:51  151922.2      0.00       0.0     230.8                           3187461.0000
+    1:00:51  151922.2      0.00       0.0     230.8                           3187461.0000
+    1:00:51  151922.2      0.00       0.0     230.8                           3187461.0000
+    1:00:51  151922.2      0.00       0.0     230.8                           3187461.0000
+    1:00:51  151922.2      0.00       0.0     230.8                           3187461.0000
+    1:00:51  151922.2      0.00       0.0     230.8                           3187461.0000
+    1:00:51  151922.2      0.00       0.0     230.8                           3187461.0000
+    1:00:51  151922.2      0.00       0.0     230.8                           3187461.0000
+    1:00:51  151922.2      0.00       0.0     230.8                           3187461.0000
+    1:00:51  151922.2      0.00       0.0     230.8                           3187461.0000
+    1:00:51  151922.2      0.00       0.0     230.8                           3187461.0000
+    1:00:51  151922.2      0.00       0.0     230.8                           3187461.0000
+    1:00:51  151922.2      0.00       0.0     230.8                           3187461.0000
+    1:00:51  151922.2      0.00       0.0     230.8                           3187461.0000
+    1:00:51  151922.2      0.00       0.0     230.8                           3187461.0000
+    1:00:51  151922.2      0.00       0.0     230.8                           3187461.0000
+    1:00:51  151922.2      0.00       0.0     230.8                           3187461.0000
+    1:00:51  151922.2      0.00       0.0     230.8                           3187461.0000
+
+                                  TOTAL                                                
+   ELAPSED            WORST NEG   SETUP    DESIGN                              LEAKAGE 
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT            POWER  
+  --------- --------- --------- --------- --------- ------------------------- ---------
+    1:00:55  151907.8      0.00       0.0     230.8                           3187133.0000
+    1:01:09  151680.4      0.01       0.0     230.8                           3186318.0000
+    1:01:09  151686.8      0.00       0.0     230.8                           3186529.0000
+    1:01:09  151686.8      0.00       0.0     230.8                           3186529.0000
+    1:01:20  151674.0      0.00       0.0     230.8                           3185967.0000
+    1:01:35  151671.9      0.00       0.0     230.8                           3185887.5000
+    1:01:43  151667.1      0.00       0.0     226.0                           3185559.5000
+    1:01:43  151667.1      0.00       0.0     226.0                           3185559.5000
+    1:01:43  151667.1      0.00       0.0     226.0                           3185559.5000
+    1:01:43  151667.1      0.00       0.0     226.0                           3185559.5000
+    1:01:43  151667.1      0.00       0.0     226.0                           3185559.5000
+    1:01:43  151667.1      0.00       0.0     226.0                           3185559.5000
+    1:01:55  151662.0      0.00       0.0     226.6                           3185571.5000
+Loading db file '/home/users/adamco27/assignment2-fall-2025/unoptimized_verilog/synth/lib/NangateOpenCellLibrary.db'
+
+
+Note: Symbol # after min delay cost means estimated hold TNS across all active scenarios 
+
+
+  Optimization Complete
+  ---------------------
+Warning: Design 'top' contains 1 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+     Net 'pe_gen[1].u_pe/clk': 1651 load(s), 1 driver(s)
+Information: State dependent leakage is now switched from off to on.
+Information: Propagating switching activity (low effort zero delay simulation). (PWR-6)
+Warning: Design has unannotated black box outputs. (PWR-428)
+1
+##########################
+# Generate Reports 
+##########################
+redirect "reports/design_report" { report_design }
+check_design
+ 
+****************************************
+check_design summary:
+Version:     S-2021.06-SP5-4
+Date:        Thu Nov 20 06:10:40 2025
+****************************************
+
+                   Name                                            Total
+--------------------------------------------------------------------------------
+Inputs/Outputs                                                    512
+    Unconnected ports (LINT-28)                                   512
+
+Cells                                                              16
+    Cells do not drive (LINT-1)                                    16
+
+Designs                                                             4
+    Design has no outputs ports (LINT-25)                           1
+    Black box (LINT-55)                                             3
+--------------------------------------------------------------------------------
+
+Warning: In design 'top', cell 'pe_gen[0].u_pe' does not drive any nets. (LINT-1)
+Warning: In design 'top', cell 'pe_gen[1].u_pe' does not drive any nets. (LINT-1)
+Warning: In design 'top', cell 'pe_gen[2].u_pe' does not drive any nets. (LINT-1)
+Warning: In design 'top', cell 'pe_gen[3].u_pe' does not drive any nets. (LINT-1)
+Warning: In design 'top', cell 'pe_gen[4].u_pe' does not drive any nets. (LINT-1)
+Warning: In design 'top', cell 'pe_gen[5].u_pe' does not drive any nets. (LINT-1)
+Warning: In design 'top', cell 'pe_gen[6].u_pe' does not drive any nets. (LINT-1)
+Warning: In design 'top', cell 'pe_gen[7].u_pe' does not drive any nets. (LINT-1)
+Warning: In design 'top', cell 'pe_gen[8].u_pe' does not drive any nets. (LINT-1)
+Warning: In design 'top', cell 'pe_gen[9].u_pe' does not drive any nets. (LINT-1)
+Warning: In design 'top', cell 'pe_gen[10].u_pe' does not drive any nets. (LINT-1)
+Warning: In design 'top', cell 'pe_gen[11].u_pe' does not drive any nets. (LINT-1)
+Warning: In design 'top', cell 'pe_gen[12].u_pe' does not drive any nets. (LINT-1)
+Warning: In design 'top', cell 'pe_gen[13].u_pe' does not drive any nets. (LINT-1)
+Warning: In design 'top', cell 'pe_gen[14].u_pe' does not drive any nets. (LINT-1)
+Warning: In design 'top', cell 'pe_gen[15].u_pe' does not drive any nets. (LINT-1)
+Warning: Design 'top' does not have any output ports. (LINT-25)
+Warning: In design 'processing_element_15', port 'vector_output[31]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_15', port 'vector_output[30]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_15', port 'vector_output[29]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_15', port 'vector_output[28]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_15', port 'vector_output[27]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_15', port 'vector_output[26]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_15', port 'vector_output[25]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_15', port 'vector_output[24]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_15', port 'vector_output[23]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_15', port 'vector_output[22]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_15', port 'vector_output[21]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_15', port 'vector_output[20]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_15', port 'vector_output[19]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_15', port 'vector_output[18]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_15', port 'vector_output[17]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_15', port 'vector_output[16]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_15', port 'vector_output[15]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_15', port 'vector_output[14]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_15', port 'vector_output[13]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_15', port 'vector_output[12]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_15', port 'vector_output[11]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_15', port 'vector_output[10]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_15', port 'vector_output[9]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_15', port 'vector_output[8]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_15', port 'vector_output[7]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_15', port 'vector_output[6]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_15', port 'vector_output[5]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_15', port 'vector_output[4]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_15', port 'vector_output[3]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_15', port 'vector_output[2]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_15', port 'vector_output[1]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_15', port 'vector_output[0]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[31]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[30]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[29]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[28]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[27]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[26]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[25]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[24]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[23]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[22]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[21]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[20]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[19]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[18]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[17]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[16]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[15]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[14]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[13]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[12]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[11]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[10]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[9]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[8]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[7]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[6]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[5]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[4]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[3]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[2]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[1]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_0', port 'vector_output[0]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[31]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[30]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[29]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[28]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[27]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[26]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[25]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[24]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[23]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[22]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[21]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[20]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[19]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[18]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[17]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[16]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[15]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[14]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[13]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[12]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[11]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[10]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[9]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[8]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[7]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[6]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[5]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[4]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[3]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[2]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[1]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_1', port 'vector_output[0]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[31]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[30]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[29]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[28]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[27]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[26]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[25]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[24]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[23]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[22]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[21]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[20]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[19]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[18]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[17]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[16]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[15]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[14]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[13]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[12]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[11]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[10]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[9]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[8]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[7]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[6]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[5]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[4]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[3]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[2]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[1]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_2', port 'vector_output[0]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[31]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[30]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[29]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[28]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[27]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[26]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[25]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[24]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[23]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[22]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[21]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[20]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[19]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[18]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[17]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[16]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[15]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[14]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[13]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[12]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[11]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[10]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[9]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[8]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[7]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[6]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[5]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[4]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[3]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[2]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[1]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_3', port 'vector_output[0]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[31]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[30]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[29]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[28]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[27]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[26]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[25]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[24]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[23]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[22]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[21]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[20]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[19]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[18]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[17]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[16]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[15]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[14]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[13]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[12]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[11]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[10]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[9]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[8]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[7]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[6]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[5]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[4]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[3]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[2]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[1]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_4', port 'vector_output[0]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[31]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[30]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[29]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[28]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[27]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[26]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[25]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[24]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[23]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[22]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[21]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[20]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[19]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[18]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[17]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[16]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[15]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[14]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[13]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[12]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[11]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[10]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[9]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[8]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[7]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[6]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[5]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[4]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[3]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[2]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[1]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_5', port 'vector_output[0]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[31]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[30]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[29]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[28]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[27]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[26]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[25]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[24]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[23]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[22]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[21]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[20]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[19]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[18]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[17]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[16]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[15]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[14]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[13]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[12]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[11]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[10]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[9]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[8]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[7]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[6]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[5]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[4]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[3]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[2]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[1]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_6', port 'vector_output[0]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[31]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[30]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[29]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[28]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[27]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[26]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[25]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[24]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[23]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[22]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[21]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[20]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[19]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[18]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[17]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[16]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[15]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[14]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[13]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[12]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[11]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[10]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[9]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[8]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[7]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[6]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[5]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[4]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[3]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[2]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[1]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_7', port 'vector_output[0]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[31]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[30]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[29]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[28]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[27]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[26]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[25]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[24]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[23]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[22]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[21]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[20]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[19]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[18]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[17]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[16]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[15]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[14]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[13]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[12]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[11]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[10]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[9]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[8]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[7]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[6]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[5]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[4]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[3]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[2]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[1]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_8', port 'vector_output[0]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[31]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[30]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[29]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[28]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[27]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[26]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[25]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[24]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[23]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[22]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[21]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[20]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[19]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[18]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[17]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[16]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[15]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[14]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[13]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[12]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[11]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[10]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[9]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[8]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[7]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[6]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[5]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[4]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[3]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[2]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[1]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_9', port 'vector_output[0]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[31]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[30]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[29]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[28]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[27]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[26]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[25]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[24]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[23]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[22]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[21]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[20]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[19]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[18]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[17]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[16]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[15]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[14]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[13]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[12]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[11]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[10]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[9]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[8]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[7]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[6]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[5]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[4]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[3]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[2]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[1]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_10', port 'vector_output[0]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[31]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[30]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[29]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[28]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[27]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[26]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[25]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[24]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[23]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[22]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[21]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[20]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[19]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[18]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[17]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[16]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[15]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[14]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[13]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[12]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[11]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[10]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[9]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[8]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[7]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[6]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[5]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[4]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[3]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[2]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[1]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_11', port 'vector_output[0]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[31]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[30]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[29]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[28]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[27]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[26]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[25]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[24]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[23]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[22]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[21]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[20]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[19]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[18]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[17]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[16]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[15]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[14]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[13]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[12]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[11]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[10]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[9]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[8]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[7]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[6]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[5]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[4]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[3]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[2]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[1]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_12', port 'vector_output[0]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[31]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[30]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[29]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[28]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[27]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[26]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[25]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[24]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[23]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[22]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[21]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[20]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[19]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[18]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[17]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[16]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[15]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[14]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[13]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[12]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[11]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[10]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[9]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[8]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[7]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[6]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[5]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[4]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[3]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[2]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[1]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_13', port 'vector_output[0]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[31]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[30]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[29]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[28]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[27]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[26]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[25]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[24]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[23]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[22]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[21]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[20]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[19]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[18]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[17]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[16]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[15]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[14]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[13]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[12]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[11]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[10]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[9]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[8]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[7]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[6]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[5]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[4]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[3]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[2]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[1]' is not connected to any nets. (LINT-28)
+Warning: In design 'processing_element_14', port 'vector_output[0]' is not connected to any nets. (LINT-28)
+Information: Design 'array_DW512_NW65536_AW16' does not contain any cells or nets. (LINT-55)
+Information: Design 'array_DW32_NW16384_AW14' does not contain any cells or nets. (LINT-55)
+Information: Design 'array_DW63_NW128_AW7' does not contain any cells or nets. (LINT-55)
+1
+redirect "reports/design_check" {check_design }
+report_area 
+ 
+****************************************
+Report : area
+Design : top
+Version: S-2021.06-SP5-4
+Date   : Thu Nov 20 06:10:41 2025
+****************************************
+
+Library(s) Used:
+
+    NangateOpenCellLibrary (File: /home/users/adamco27/assignment2-fall-2025/unoptimized_verilog/synth/lib/NangateOpenCellLibrary.db)
+
+Number of ports:                         1737
+Number of nets:                        108281
+Number of cells:                        94168
+Number of combinational cells:          92453
+Number of sequential cells:              1697
+Number of macros/black boxes:               0
+Number of buf/inv:                      13016
+Number of references:                      47
+
+Combinational area:             142768.584628
+Buf/Inv area:                     7343.462037
+Noncombinational area:            8893.444287
+Macro/Black Box area:                0.000000
+Net Interconnect area:      undefined  (Wire load has zero net area)
+
+Total cell area:                151662.028915
+Total area:                 undefined
+1
+redirect "reports/area_report" { report_area }
+report_area -hierarchy
+ 
+****************************************
+Report : area
+Design : top
+Version: S-2021.06-SP5-4
+Date   : Thu Nov 20 06:10:41 2025
+****************************************
+
+Library(s) Used:
+
+    NangateOpenCellLibrary (File: /home/users/adamco27/assignment2-fall-2025/unoptimized_verilog/synth/lib/NangateOpenCellLibrary.db)
+
+Number of ports:                         1737
+Number of nets:                        108281
+Number of cells:                        94168
+Number of combinational cells:          92453
+Number of sequential cells:              1697
+Number of macros/black boxes:               0
+Number of buf/inv:                      13016
+Number of references:                      47
+
+Combinational area:             142768.584628
+Buf/Inv area:                     7343.462037
+Noncombinational area:            8893.444287
+Macro/Black Box area:                0.000000
+Net Interconnect area:      undefined  (Wire load has zero net area)
+
+Total cell area:                151662.028915
+Total area:                 undefined
+
+Hierarchical area distribution
+------------------------------
+
+                                  Global cell area             Local cell area
+                                  --------------------  ------------------------------ 
+Hierarchical cell                 Absolute     Percent  Combi-       Noncombi-  Black-
+                                  Total        Total    national     national   boxes   Design
+--------------------------------  -----------  -------  -----------  ---------  ------  ---------------------
+top                               151662.0289    100.0     501.9420   566.0480  0.0000  top
+pe_gen[0].u_pe                      9415.3361      6.2    8872.1640   543.1720  0.0000  processing_element_15
+pe_gen[10].u_pe                     9400.4401      6.2    8884.4000   516.0400  0.0000  processing_element_5
+pe_gen[11].u_pe                     9374.1061      6.2    8863.3860   510.7200  0.0000  processing_element_4
+pe_gen[12].u_pe                     9440.8721      6.2    8908.3400   532.5320  0.0000  processing_element_3
+pe_gen[13].u_pe                     9396.7161      6.2    8885.9960   510.7200  0.0000  processing_element_2
+pe_gen[14].u_pe                     9431.8281      6.2    8905.1480   526.6800  0.0000  processing_element_1
+pe_gen[15].u_pe                     9412.9421      6.2    8891.5820   521.3600  0.0000  processing_element_0
+pe_gen[1].u_pe                      9415.3361      6.2    8899.2960   516.0400  0.0000  processing_element_14
+pe_gen[2].u_pe                      9399.3761      6.2    8883.3360   516.0400  0.0000  processing_element_13
+pe_gen[3].u_pe                      9430.4981      6.2    8919.7780   510.7200  0.0000  processing_element_12
+pe_gen[4].u_pe                      9429.4341      6.2    8897.4340   532.0000  0.0000  processing_element_11
+pe_gen[5].u_pe                      9391.9281      6.2    8886.5280   505.4000  0.0000  processing_element_10
+pe_gen[6].u_pe                      9429.7001      6.2    8908.3400   521.3600  0.0000  processing_element_9
+pe_gen[7].u_pe                      9379.6921      6.2    8879.6120   500.0800  0.0000  processing_element_8
+pe_gen[8].u_pe                      9447.2561      6.2    8904.0840   543.1720  0.0000  processing_element_7
+pe_gen[9].u_pe                      9398.5781      6.2    8877.2180   521.3600  0.0000  processing_element_6
+--------------------------------  -----------  -------  -----------  ---------  ------  ---------------------
+Total                                                   142768.5846  8893.4443  0.0000
+
+1
+redirect "reports/area_report_hier" { report_area -hierarchy }
+report_power
+ 
+****************************************
+Report : power
+        -analysis_effort low
+Design : top
+Version: S-2021.06-SP5-4
+Date   : Thu Nov 20 06:10:42 2025
+****************************************
+
+
+Library(s) Used:
+
+    NangateOpenCellLibrary (File: /home/users/adamco27/assignment2-fall-2025/unoptimized_verilog/synth/lib/NangateOpenCellLibrary.db)
+
+
+Operating Conditions: typical   Library: NangateOpenCellLibrary
+Wire Load Model Mode: top
+
+Design        Wire Load Model            Library
+------------------------------------------------
+top                    1K_hvratio_1_4    NangateOpenCellLibrary
+
+
+Global Operating Voltage = 1.1  
+Power-specific unit information :
+    Voltage Units = 1V
+    Capacitance Units = 1.000000ff
+    Time Units = 1ns
+    Dynamic Power Units = 1uW    (derived from V,C,T units)
+    Leakage Power Units = 1nW
+
+
+  Cell Internal Power  =  45.5164 mW   (51%)
+  Net Switching Power  =  44.5050 mW   (49%)
+                         ---------
+Total Dynamic Power    =  90.0214 mW  (100%)
+
+Cell Leakage Power     =   3.2286 mW
+
+
+                 Internal         Switching           Leakage            Total
+Power Group      Power            Power               Power              Power   (   %    )  Attrs
+--------------------------------------------------------------------------------------------------
+io_pad             0.0000            0.0000            0.0000            0.0000  (   0.00%)
+memory             0.0000            0.0000            0.0000            0.0000  (   0.00%)
+black_box          0.0000        1.4758e+03            0.0000        1.4758e+03  (   1.58%)
+clock_network  3.8355e+04        3.6214e+04        2.6411e+06        7.7210e+04  (  82.80%)
+register       5.8905e+03          210.1495        1.3395e+05        6.2346e+03  (   6.69%)
+sequential         1.5656        5.0581e-02          555.1111            2.1713  (   0.00%)
+combinational  1.2691e+03        6.6047e+03        4.5301e+05        8.3269e+03  (   8.93%)
+--------------------------------------------------------------------------------------------------
+Total          4.5516e+04 uW     4.4505e+04 uW     3.2286e+06 nW     9.3249e+04 uW
+1
+redirect "reports/power_report" { report_power -analysis_effort hi }
+report_timing
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+Design : top
+Version: S-2021.06-SP5-4
+Date   : Thu Nov 20 06:11:37 2025
+****************************************
+
+ # A fanout number of 1000 was used for high fanout net computations.
+
+Operating Conditions: typical   Library: NangateOpenCellLibrary
+Wire Load Model Mode: top
+
+  Startpoint: pe_gen[3].u_pe/clk_r_REG1236_S5
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: pe_gen[3].u_pe/clk_r_REG1325_S19
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  top                1K_hvratio_1_4        NangateOpenCellLibrary
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  pe_gen[3].u_pe/clk_r_REG1236_S5/CK (DFFR_X1)            0.00 #     0.00 r
+  pe_gen[3].u_pe/clk_r_REG1236_S5/Q (DFFR_X1)             0.09       0.09 f
+  pe_gen[3].u_pe/U1425/S (HA_X1)                          0.09       0.18 f
+  pe_gen[3].u_pe/U1419/CO (FA_X1)                         0.11       0.29 f
+  pe_gen[3].u_pe/U1424/ZN (NAND2_X1)                      0.03       0.32 r
+  pe_gen[3].u_pe/U1427/ZN (NAND2_X1)                      0.03       0.35 f
+  pe_gen[3].u_pe/U1438/ZN (NAND2_X1)                      0.03       0.39 r
+  pe_gen[3].u_pe/U1440/ZN (NAND3_X1)                      0.05       0.43 f
+  pe_gen[3].u_pe/U1450/ZN (NAND2_X1)                      0.03       0.47 r
+  pe_gen[3].u_pe/U1452/ZN (NAND3_X1)                      0.04       0.51 f
+  pe_gen[3].u_pe/U413/ZN (OAI21_X1)                       0.04       0.54 r
+  pe_gen[3].u_pe/U415/ZN (NAND2_X1)                       0.03       0.58 f
+  pe_gen[3].u_pe/U414/ZN (NAND2_X1)                       0.03       0.61 r
+  pe_gen[3].u_pe/U416/ZN (NAND2_X1)                       0.03       0.64 f
+  pe_gen[3].u_pe/U1480/ZN (NAND2_X1)                      0.03       0.67 r
+  pe_gen[3].u_pe/U50/ZN (AND3_X2)                         0.06       0.73 r
+  pe_gen[3].u_pe/U1485/ZN (OAI21_X1)                      0.03       0.76 f
+  pe_gen[3].u_pe/U2435/CO (FA_X1)                         0.09       0.85 f
+  pe_gen[3].u_pe/U409/ZN (NAND3_X1)                       0.05       0.90 r
+  pe_gen[3].u_pe/U362/ZN (OAI211_X1)                      0.05       0.95 f
+  pe_gen[3].u_pe/U1572/ZN (NAND2_X1)                      0.03       0.98 r
+  pe_gen[3].u_pe/U1575/ZN (NAND3_X1)                      0.04       1.02 f
+  pe_gen[3].u_pe/U370/ZN (NAND3_X1)                       0.04       1.06 r
+  pe_gen[3].u_pe/U369/ZN (NAND3_X1)                       0.04       1.10 f
+  pe_gen[3].u_pe/U1652/ZN (NAND2_X1)                      0.03       1.14 r
+  pe_gen[3].u_pe/U1654/ZN (NAND3_X1)                      0.05       1.19 f
+  pe_gen[3].u_pe/U1679/ZN (NAND2_X1)                      0.03       1.22 r
+  pe_gen[3].u_pe/U1681/ZN (NAND3_X1)                      0.05       1.27 f
+  pe_gen[3].u_pe/U1703/ZN (NAND2_X1)                      0.03       1.30 r
+  pe_gen[3].u_pe/U1705/ZN (NAND3_X1)                      0.05       1.35 f
+  pe_gen[3].u_pe/U375/ZN (NAND3_X1)                       0.04       1.38 r
+  pe_gen[3].u_pe/U374/ZN (NAND3_X1)                       0.04       1.42 f
+  pe_gen[3].u_pe/U376/ZN (NAND2_X1)                       0.03       1.46 r
+  pe_gen[3].u_pe/U1764/ZN (NAND3_X1)                      0.05       1.50 f
+  pe_gen[3].u_pe/U411/ZN (NAND3_X1)                       0.04       1.54 r
+  pe_gen[3].u_pe/U367/ZN (AOI22_X1)                       0.04       1.59 f
+  pe_gen[3].u_pe/U368/ZN (NAND3_X1)                       0.04       1.63 r
+  pe_gen[3].u_pe/U51/ZN (NAND4_X2)                        0.05       1.68 f
+  pe_gen[3].u_pe/U1836/ZN (NAND2_X1)                      0.03       1.71 r
+  pe_gen[3].u_pe/U1838/ZN (NAND3_X1)                      0.05       1.76 f
+  pe_gen[3].u_pe/U1843/ZN (NAND2_X1)                      0.04       1.80 r
+  pe_gen[3].u_pe/U406/ZN (NAND3_X1)                       0.04       1.84 f
+  pe_gen[3].u_pe/U1939/ZN (XNOR2_X1)                      0.05       1.89 f
+  pe_gen[3].u_pe/U1940/Z (MUX2_X1)                        0.06       1.95 f
+  pe_gen[3].u_pe/clk_r_REG1325_S19/D (DFFR_X1)            0.01       1.96 f
+  data arrival time                                                  1.96
+
+  clock clk (rise edge)                                   2.00       2.00
+  clock network delay (ideal)                             0.00       2.00
+  pe_gen[3].u_pe/clk_r_REG1325_S19/CK (DFFR_X1)           0.00       2.00 r
+  library setup time                                     -0.04       1.96
+  data required time                                                 1.96
+  --------------------------------------------------------------------------
+  data required time                                                 1.96
+  data arrival time                                                 -1.96
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.00
+
+
+1
+redirect "reports/timing_report_maxsm" { report_timing -significant_digits 4 }
+report_qor
+ 
+****************************************
+Report : qor
+Design : top
+Version: S-2021.06-SP5-4
+Date   : Thu Nov 20 06:11:37 2025
+****************************************
+
+
+  Timing Path Group 'clk'
+  -----------------------------------
+  Levels of Logic:              42.00
+  Critical Path Length:          1.96
+  Critical Path Slack:           0.00
+  Critical Path Clk Period:      2.00
+  Total Negative Slack:          0.00
+  No. of Violating Paths:        0.00
+  Worst Hold Violation:          0.00
+  Total Hold Violation:          0.00
+  No. of Hold Violations:        0.00
+  -----------------------------------
+
+
+  Cell Count
+  -----------------------------------
+  Hierarchical Cell Count:         16
+  Hierarchical Port Count:       1728
+  Leaf Cell Count:              94150
+  Buf/Inv Cell Count:           13016
+  Buf Cell Count:                 485
+  Inv Cell Count:               12531
+  CT Buf/Inv Cell Count:            0
+  Combinational Cell Count:     92456
+  Sequential Cell Count:         1694
+  Macro Count:                      0
+  -----------------------------------
+
+
+  Area
+  -----------------------------------
+  Combinational Area:   142768.584628
+  Noncombinational Area:  8893.444287
+  Buf/Inv Area:           7343.462037
+  Total Buffer Area:           422.14
+  Total Inverter Area:        6921.32
+  Macro/Black Box Area:      0.000000
+  Net Area:                  0.000000
+  -----------------------------------
+  Cell Area:            151662.028915
+  Design Area:          151662.028915
+
+
+  Design Rules
+  -----------------------------------
+  Total Number of Nets:        107065
+  Nets With Violations:             4
+  Max Trans Violations:             0
+  Max Cap Violations:               3
+  Max Fanout Violations:            1
+  -----------------------------------
+
+
+  Hostname: caddy18.stanford.edu
+
+  Compile CPU Statistics
+  -----------------------------------------
+  Resource Sharing:                 3904.25
+  Logic Optimization:               1057.84
+  Mapping Optimization:             2564.39
+  -----------------------------------------
+  Overall Compile Time:             8487.66
+  Overall Compile Wall Clock Time:  3740.86
+
+  --------------------------------------------------------------------
+
+  Design  WNS: 0.00  TNS: 0.00  Number of Violating Paths: 0
+
+
+  Design (Hold)  WNS: 0.00  TNS: 0.00  Number of Violating Paths: 0
+
+  --------------------------------------------------------------------
+
+
+1
+redirect "reports/qor_report" { report_qor }
+check_error
+0
+redirect "reports/error_checking_report" { check_error }
+###################################
+# Save the Design DataBase
+###################################
+write -format verilog -hierarchy -output "netlist/top.mapped.v"
+Writing verilog file '/home/users/adamco27/assignment2-fall-2025/unoptimized_verilog/synth/netlist/top.mapped.v'.
+Warning: Verilog 'assign' or 'tran' statements are written out. (VO-4)
+Warning: Verilog writer has added 2 nets to module top using SYNOPSYS_UNCONNECTED_ as prefix.  Please use the change_names command to make the correct changes before invoking the verilog writer.  (VO-11)
+1
+#Concise Results in a singular file
+echo $CLK_PERIOD >> results.txt
+sh cat reports/error_checking_report >> results.txt
+sh grep -i slack reports/timing_report_maxsm >> results.txt
+sh cat reports/power_report | grep Total >> results.txt
+sh cat reports/power_report | grep Cell | grep Leakage >> results.txt
+sh cat reports/area_report | grep Total | grep cell >> results.txt
+exit 
+
+Memory usage for this session 4096 Mbytes.
+Memory usage for this session including child processes 5096 Mbytes.
+CPU usage for this session 8674 seconds ( 2.41 hours ).
+Elapsed time for this session 3933 seconds ( 1.09 hours ).
+
+Thank you...
