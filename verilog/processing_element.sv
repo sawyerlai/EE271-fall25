@@ -53,18 +53,21 @@ module processing_element(
     logic signed [`PE_ACCUMULATION_BITWIDTH/4 - 1 : 0] lane_ext8;
     logic signed [`PE_INPUT_BITWIDTH/4 - 1:0] lane_in8;
 
+    // Pipeline Registers
+    pe_inst_t pe_inst_ff;
+    logic pe_inst_valid_ff;
+
     always @* begin
         integer i;
         next_output_value = output_value;
         next_acc_value = acc_value;
         vector_output = output_value;
 
-        
-
-        if (pe_inst_valid) begin
-            opcode = pe_inst.opcode;
-            mode = pe_inst.mode;
-            value = pe_inst.value;
+        // Use the delayed/registered instruction
+        if (pe_inst_valid_ff) begin
+            opcode = pe_inst_ff.opcode;
+            mode = pe_inst_ff.mode;
+            value = pe_inst_ff.value;
 
             case (opcode) 
                 `PE_RND_OPCODE: begin
@@ -112,7 +115,7 @@ module processing_element(
                                         temp_val16  = acc_value[i * `PE_ACCUMULATION_BITWIDTH/2 +: `PE_ACCUMULATION_BITWIDTH/2];
                                         final_val16 = temp_val16 + a_val16 * b_val16;
                                         wrapped16 = final_val16 & ((1 << `PE_ACCUMULATION_BITWIDTH/2) - 1);
-                                        next_acc_value[i * `PE_ACCUMULATION_BITWIDTH/4 +: `PE_ACCUMULATION_BITWIDTH/4] = wrapped16;
+                                        next_acc_value[i * `PE_ACCUMULATION_BITWIDTH/2 +: `PE_ACCUMULATION_BITWIDTH/2] = wrapped16;
                                     end
                                 end
                                 default: begin
@@ -182,13 +185,17 @@ module processing_element(
         end
     end
 
-    always_ff @(posedge clk) begin
+    always_ff @(posedge clk, negedge rst_n) begin
         if (!rst_n) begin
-            acc_value <= '0; // sets all bits to 0!
+            acc_value <= '0; 
             output_value <= '0;
+            pe_inst_ff <= '0;
+            pe_inst_valid_ff <= '0;
         end else begin
             acc_value <= next_acc_value;
             output_value <= next_output_value;
+            pe_inst_ff <= pe_inst;
+            pe_inst_valid_ff <= pe_inst_valid;
         end
     end
     // END IMPLEMENTATION
