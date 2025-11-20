@@ -30,12 +30,11 @@ module top(
     buf_inst_t    buf_inst;
     logic         buf_inst_valid;
 
-    // Data Buses
     logic [`MEM0_BITWIDTH-1:0] matrix_data; // From MEM0 to PEs
     logic [`MEM1_BITWIDTH-1:0] vector_data; // From MEM1 to PEs
     logic [`MEM2_BITWIDTH-1:0] output_data; // From PEs to MEM2
 
-    // Controller
+    // controller
     controller u_controller (
         .clk(clk),
         .rst_n(rst_n),
@@ -48,7 +47,7 @@ module top(
         .buf_inst_valid(buf_inst_valid)
     );
 
-    // Buffer
+    // buffer
     buffer u_buffer (
         .clk(clk),
         .rst_n(rst_n),
@@ -59,17 +58,15 @@ module top(
         .output_data(output_data)
     );
 
-    // PE Array
     logic [`PE_INPUT_BITWIDTH-1:0] pe_inputs_a [`PE_COUNT-1:0];
     logic [`PE_INPUT_BITWIDTH-1:0] pe_inputs_b;
     logic [`PE_OUTPUT_BITWIDTH-1:0] pe_outputs [`PE_COUNT-1:0];
 
-    assign pe_inputs_b = vector_data; // Broadcast vector data to all PEs
+    assign pe_inputs_b = vector_data; 
 
     genvar i;
     generate
         for (i = 0; i < `PE_COUNT; i++) begin : pe_gen
-            // Connect slices of matrix data
             assign pe_inputs_a[i] = matrix_data[i*`PE_INPUT_BITWIDTH +: `PE_INPUT_BITWIDTH];
 
             processing_element u_pe (
@@ -82,7 +79,6 @@ module top(
                 .vector_output(pe_outputs[i])
             );
             
-            // Concatenate PE outputs for MEM2
             assign output_data[i*`PE_OUTPUT_BITWIDTH +: `PE_OUTPUT_BITWIDTH] = pe_outputs[i];
         end
     endgenerate
