@@ -74,9 +74,10 @@ module processing_element(
             opcode = pe_inst_ff.opcode;
             mode = pe_inst_ff.mode;
             value = pe_inst_ff.value;
-
+            
             case (opcode) 
                 `PE_RND_OPCODE: begin
+                    next_lane_idx = 2'd0;
                     case (mode)
                         2'd0: begin
                             for (i = 0; i < 4; i++) begin
@@ -110,7 +111,7 @@ module processing_element(
                                     b_val = {{(`PE_INPUT_BITWIDTH - 8){b_val8[7]}}, b_val8};
 
                                     temp_val8 = acc_value[lane_idx * `PE_ACCUMULATION_BITWIDTH/4 +: `PE_ACCUMULATION_BITWIDTH/4];
-                                    final_val8 = temp_val8 + mul_p[`PE_ACCUMULATION_BITWIDTH/4 - 1:0];
+                                    final_val8 = temp_val8 + mul_output[`PE_ACCUMULATION_BITWIDTH/4 - 1:0];
                                     wrapped8 = final_val8 & ((1 << `PE_ACCUMULATION_BITWIDTH/4) - 1);
                                     next_acc_value[lane_idx * `PE_ACCUMULATION_BITWIDTH/4 +: `PE_ACCUMULATION_BITWIDTH/4] = wrapped8;
 
@@ -123,11 +124,11 @@ module processing_element(
                                     a_val16 = vector_input[lane_idx * 16 +: 16];
                                     b_val16 = matrix_input[lane_idx * 16 +: 16];
 
-                                    a_val = {{(`PE_INPUT_BITWIDTH - 16){a_val16[7]}}, a_val16}; // sign extend
-                                    b_val = {{(`PE_INPUT_BITWIDTH - 16){b_val16[7]}}, b_val16};
+                                    a_val = {{(`PE_INPUT_BITWIDTH - 16){a_val16[15]}}, a_val16}; // sign extend
+                                    b_val = {{(`PE_INPUT_BITWIDTH - 16){b_val16[15]}}, b_val16};
 
                                     temp_val16 = acc_value[lane_idx * `PE_ACCUMULATION_BITWIDTH/2 +: `PE_ACCUMULATION_BITWIDTH/2];
-                                    final_val16 = temp_val16 + mul_p[`PE_ACCUMULATION_BITWIDTH/2 - 1:0];
+                                    final_val16 = temp_val16 + mul_output[`PE_ACCUMULATION_BITWIDTH/2 - 1:0];
                                     wrapped16 = final_val16 & ((1 << `PE_ACCUMULATION_BITWIDTH/2) - 1);
                                     next_acc_value[lane_idx * `PE_ACCUMULATION_BITWIDTH/2 +: `PE_ACCUMULATION_BITWIDTH/2] = wrapped16;
 
@@ -140,13 +141,14 @@ module processing_element(
                                     a_val = vector_input;
                                     b_val = matrix_input;
                                     temp_val  = acc_value;
-                                    final_val = temp_val + a_val * b_val;
+                                    final_val = temp_val + mul_output;
                                     wrapped = final_val & ((1 << `PE_ACCUMULATION_BITWIDTH) - 1);
                                     next_acc_value = wrapped;
                                 end
                             endcase
                         end
                         `PE_OUT_VALUE: begin
+                            next_lane_idx = 2'd0;
                             case (mode)
                                 2'd0: begin
                                     for (i = 0; i < 4; i++) begin
@@ -167,6 +169,7 @@ module processing_element(
                             endcase 
                         end
                         `PE_PASS_VALUE: begin
+                            next_lane_idx = 2'd0;
                             case (mode) 
                                 2'd0: begin
                                     for (i = 0; i < 4; i++) begin
@@ -191,6 +194,7 @@ module processing_element(
                             
                         end
                         `PE_CLR_VALUE: begin
+                            next_lane_idx = 2'd0;
                             next_acc_value = '0;
                             next_output_value = '0;
                         end
