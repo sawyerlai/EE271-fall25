@@ -1,0 +1,115 @@
+.PHONY: int8_test int16_test int32_test debug clean
+
+# Default Variables
+TB_NAME:=top
+TIMEOUT:=10000000
+VERILOG_DIR=unoptimized_verilog
+OUTPUT_FILE=result.bits
+PE_COUNT=64
+
+# Compiler Defines
+CC=ivd-cc
+MG=ivd-mg
+AS=ivd-as
+VG=ivd-gv
+SIM=ivd-sim
+SW_DIR=software
+
+# VCS Compile Options
+VCS = vcs
+VCS_FLAGS= -sverilog -full64 -timescale=1ns/1ps -debug
+VCS_GEN_FILES=simv simv.daidir DVEfiles csrc ucli.key vcdplus.vpd
+
+# Directories/Files
+SOFTWARE_DIR=software
+MATRIX=matrix.npy
+VECTOR=vector.npy
+INSTRUCTIONS=inst.bits
+ASM_FILE=mat_mul.asm
+MEM0_CONFIG=mem0.bits
+MEM1_CONFIG=mem1.bits
+
+
+int8_test:
+
+	@# Compiling Software
+	mkdir -p $(SOFTWARE_DIR)
+	cd $(SOFTWARE_DIR) && $(MG) 1024 1024 -5 5 --out $(MATRIX) --seed     0
+	cd $(SOFTWARE_DIR) && $(MG) 1024    1 -5 5 --out $(VECTOR) --seed 12345
+	cd $(SOFTWARE_DIR) && $(CC) $(MATRIX) $(VECTOR) INT8 --pe_count $(PE_COUNT) --out_mem0 $(MEM0_CONFIG) --out_mem1 $(MEM1_CONFIG) --out_asm $(ASM_FILE)
+	cd $(SOFTWARE_DIR) && $(AS) $(ASM_FILE) --pe_count $(PE_COUNT) --out $(INSTRUCTIONS)
+
+	@# Compiling Hardware
+	$(VG) --pe_count $(PE_COUNT) --out ./testbench/defines.sv
+	sed 's/VERILOG_DIR/$(VERILOG_DIR)/g' ./testbench/tb_top.f > ./testbench/tb_top_tmp.f
+	$(VCS) $(VCS_FLAGS) -f ./testbench/tb_top_tmp.f -top tb_top
+	rm ./testbench/tb_top_tmp.f
+
+	@# Running Software Sim
+	$(SIM) --pe_count $(PE_COUNT) --instruction_bits ./$(SOFTWARE_DIR)/$(INSTRUCTIONS) --mem0_bits ./$(SOFTWARE_DIR)/$(MEM0_CONFIG) --mem1_bits ./$(SOFTWARE_DIR)/$(MEM1_CONFIG)
+
+	@# Running Hardware Sim
+	export num_insts=$$( echo $$(( $$(wc -l < ./software/mat_mul.asm) + 1 )) ); \
+	./simv +INST_COUNT=$$num_insts +INST_FILE=./$(SOFTWARE_DIR)/$(INSTRUCTIONS) +MEM0_FILE=./$(SOFTWARE_DIR)/$(MEM0_CONFIG) +MEM1_FILE=./$(SOFTWARE_DIR)/$(MEM1_CONFIG) +TIMEOUT=$(TIMEOUT) +OUTPUT_FILE=$(OUTPUT_FILE)
+
+	@# Checking if the test passed
+	./check_results.sh result.bits out.bits
+
+int16_test:
+
+	@# Compiling Software
+	mkdir -p $(SOFTWARE_DIR)
+	cd $(SOFTWARE_DIR) && $(MG) 512 512 -5 5 --out $(MATRIX) --seed     0
+	cd $(SOFTWARE_DIR) && $(MG) 512   1 -5 5 --out $(VECTOR) --seed 12345
+	cd $(SOFTWARE_DIR) && $(CC) $(MATRIX) $(VECTOR) INT16 --pe_count $(PE_COUNT) --out_mem0 $(MEM0_CONFIG) --out_mem1 $(MEM1_CONFIG) --out_asm $(ASM_FILE)
+	cd $(SOFTWARE_DIR) && $(AS) $(ASM_FILE) --pe_count $(PE_COUNT) --out $(INSTRUCTIONS)
+
+	@# Compiling Hardware
+	$(VG) --pe_count $(PE_COUNT) --out ./testbench/defines.sv
+	sed 's/VERILOG_DIR/$(VERILOG_DIR)/g' ./testbench/tb_top.f > ./testbench/tb_top_tmp.f
+	$(VCS) $(VCS_FLAGS) -f ./testbench/tb_top_tmp.f -top tb_top
+	rm ./testbench/tb_top_tmp.f
+
+	@# Running Software Sim
+	$(SIM) --pe_count $(PE_COUNT) --instruction_bits ./$(SOFTWARE_DIR)/$(INSTRUCTIONS) --mem0_bits ./$(SOFTWARE_DIR)/$(MEM0_CONFIG) --mem1_bits ./$(SOFTWARE_DIR)/$(MEM1_CONFIG)
+
+	@# Running Hardware Sim
+	export num_insts=$$( echo $$(( $$(wc -l < ./software/mat_mul.asm) + 1 )) ); \
+	./simv +INST_COUNT=$$num_insts +INST_FILE=./$(SOFTWARE_DIR)/$(INSTRUCTIONS) +MEM0_FILE=./$(SOFTWARE_DIR)/$(MEM0_CONFIG) +MEM1_FILE=./$(SOFTWARE_DIR)/$(MEM1_CONFIG) +TIMEOUT=$(TIMEOUT) +OUTPUT_FILE=$(OUTPUT_FILE)
+
+	@# Checking if the test passed
+	./check_results.sh result.bits out.bits
+
+int32_test:
+
+	@# Compiling Software
+	mkdir -p $(SOFTWARE_DIR)
+	cd $(SOFTWARE_DIR) && $(MG) 256 256 -5 5 --out $(MATRIX) --seed     0
+	cd $(SOFTWARE_DIR) && $(MG) 256   1 -5 5 --out $(VECTOR) --seed 12345
+	cd $(SOFTWARE_DIR) && $(CC) $(MATRIX) $(VECTOR) INT32 --pe_count $(PE_COUNT) --out_mem0 $(MEM0_CONFIG) --out_mem1 $(MEM1_CONFIG) --out_asm $(ASM_FILE)
+	cd $(SOFTWARE_DIR) && $(AS) $(ASM_FILE) --pe_count $(PE_COUNT) --out $(INSTRUCTIONS)
+
+	@# Compiling Hardware
+	$(VG) --pe_count $(PE_COUNT) --out ./testbench/defines.sv
+	sed 's/VERILOG_DIR/$(VERILOG_DIR)/g' ./testbench/tb_top.f > ./testbench/tb_top_tmp.f
+	$(VCS) $(VCS_FLAGS) -f ./testbench/tb_top_tmp.f -top tb_top
+	rm ./testbench/tb_top_tmp.f
+
+	@# Running Software Sim
+	$(SIM) --pe_count $(PE_COUNT) --instruction_bits ./$(SOFTWARE_DIR)/$(INSTRUCTIONS) --mem0_bits ./$(SOFTWARE_DIR)/$(MEM0_CONFIG) --mem1_bits ./$(SOFTWARE_DIR)/$(MEM1_CONFIG)
+
+	@# Running Hardware Sim
+	export num_insts=$$( echo $$(( $$(wc -l < ./software/mat_mul.asm) + 1 )) ); \
+	./simv +INST_COUNT=$$num_insts +INST_FILE=./$(SOFTWARE_DIR)/$(INSTRUCTIONS) +MEM0_FILE=./$(SOFTWARE_DIR)/$(MEM0_CONFIG) +MEM1_FILE=./$(SOFTWARE_DIR)/$(MEM1_CONFIG) +TIMEOUT=$(TIMEOUT) +OUTPUT_FILE=$(OUTPUT_FILE)
+
+	@# Checking if the test passed
+	./check_results.sh result.bits out.bits
+
+debug:
+	dve -vpd vcdplus.vpd -full64
+
+clean:
+	rm -rf $(VCS_GEN_FILES)
+	rm -rf $(SW_DIR)
+	rm -f  ./testbench/defines.sv
+	rm -f  ./*.bits
