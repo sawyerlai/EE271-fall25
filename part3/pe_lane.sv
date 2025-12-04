@@ -1,6 +1,3 @@
-`ifndef PE_LANE_SV
-`define PE_LANE_SV
-
 //==============================================================================
 // pe_lane - Parameterized Lane Submodule for Processing Element
 //
@@ -113,5 +110,3 @@ module pe_lane #(
     end
 
 endmodule
-
-`endif // PE_LANE_SV

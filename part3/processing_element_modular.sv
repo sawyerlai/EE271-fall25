@@ -1,5 +1,4 @@
 `include "defines.sv"
-`include "pe_lane.sv"
 
 //==============================================================================
 // processing_element_modular - Fully Parameterized Modular Processing Element
