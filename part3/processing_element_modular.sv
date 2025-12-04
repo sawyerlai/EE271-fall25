@@ -74,7 +74,7 @@ module processing_element(
     logic signed [`PE_ACCUMULATION_BITWIDTH-1:0] mul_result_ff;
     logic signed [`PE_ACCUMULATION_BITWIDTH/2-1:0] mul_result_ff16 [1:0];
     logic signed [`PE_ACCUMULATION_BITWIDTH/4-1:0] mul_result_ff8 [3:0];
-    
+
     logic mac_stage2_valid;
     logic [`PE_MODE_BITWIDTH-1:0] mode_stage2;
 
@@ -84,7 +84,7 @@ module processing_element(
     logic signed [16:0] mul_a [3:0];
     logic signed [16:0] mul_b [3:0];
     logic signed [33:0] mul_out [3:0];
-    
+
     assign mul_out[0] = mul_a[0] * mul_b[0];
     assign mul_out[1] = mul_a[1] * mul_b[1];
     assign mul_out[2] = mul_a[2] * mul_b[2];
@@ -97,7 +97,7 @@ module processing_element(
     logic signed [`PE_ACCUMULATION_BITWIDTH/2-1:0] mul_result_comb16 [1:0];
     logic signed [`PE_ACCUMULATION_BITWIDTH/4-1:0] mul_result_comb8 [3:0];
     logic is_mac_op;
-    
+
     logic [`PE_OPCODE_BITWIDTH-1:0] opcode_s1;
     logic [`PE_MODE_BITWIDTH-1:0] mode_s1;
     logic [`PE_VALUE_BITWIDTH-1:0] value_s1;
@@ -109,22 +109,22 @@ module processing_element(
 
     always_comb begin
         integer i;
-        
+
         opcode_s1 = pe_inst_ff.opcode;
         mode_s1 = pe_inst_ff.mode;
         value_s1 = pe_inst_ff.value;
-        
+
         // Default multiplier inputs
         for (i = 0; i < 4; i++) begin
             mul_a[i] = '0;
             mul_b[i] = '0;
         end
-        
+
         mul_result_comb = '0;
         for (i = 0; i < 2; i++) mul_result_comb16[i] = '0;
         for (i = 0; i < 4; i++) mul_result_comb8[i] = '0;
         is_mac_op = 1'b0;
-        
+
         a_hi = '0; a_lo = '0;
         b_hi = '0; b_lo = '0;
         pp_hh = '0; pp_hl = '0; pp_lh = '0; pp_ll = '0;
@@ -132,7 +132,7 @@ module processing_element(
         if (pe_inst_valid_ff) begin
             if (opcode_s1 != `PE_RND_OPCODE && value_s1 == `PE_MAC_VALUE) begin
                 is_mac_op = 1'b1;
-                
+
                 case (mode_s1)
                     2'd0: begin // INT8 - 4 lanes
                         for (i = 0; i < 4; i++) begin
@@ -141,7 +141,7 @@ module processing_element(
                             mul_result_comb8[i] = mul_out[i][15:0];
                         end
                     end
-                    
+
                     2'd1: begin // INT16 - 2 lanes
                         for (i = 0; i < 2; i++) begin
                             mul_a[i] = {vector_input[i*16+15], vector_input[i*16 +: 16]};
@@ -149,30 +149,30 @@ module processing_element(
                             mul_result_comb16[i] = mul_out[i][31:0];
                         end
                     end
-                    
+
                     default: begin // INT32 - partial products
                         a_hi = vector_input[31:16];
                         a_lo = vector_input[15:0];
                         b_hi = matrix_input[31:16];
                         b_lo = matrix_input[15:0];
-                        
+
                         mul_a[0] = {a_hi[15], a_hi};
                         mul_b[0] = {b_hi[15], b_hi};
-                        
+
                         mul_a[1] = {a_hi[15], a_hi};
                         mul_b[1] = {1'b0, b_lo};
-                        
+
                         mul_a[2] = {1'b0, a_lo};
                         mul_b[2] = {b_hi[15], b_hi};
-                        
+
                         mul_a[3] = {1'b0, a_lo};
                         mul_b[3] = {1'b0, b_lo};
-                        
+
                         pp_hh = mul_out[0];
                         pp_hl = mul_out[1];
                         pp_lh = mul_out[2];
                         pp_ll = mul_out[3];
-                        
+
                         mul_result_comb = (pp_hh << 32) + (pp_hl << 16) + (pp_lh << 16) + pp_ll;
                     end
                 endcase
@@ -217,7 +217,7 @@ module processing_element(
 
         // Current instruction operations
         if (pe_inst_valid_ff) begin
-            case (pe_inst_ff.opcode) 
+            case (pe_inst_ff.opcode)
                 `PE_RND_OPCODE: begin
                     case (pe_inst_ff.mode)
                         2'd0: begin // INT8
@@ -239,9 +239,9 @@ module processing_element(
                             next_acc_value = shifted;
                         end
                     endcase
-                end   
+                end
                 default: begin
-                    case (pe_inst_ff.value) 
+                    case (pe_inst_ff.value)
                         `PE_MAC_VALUE: begin
                             // MAC handled via pipeline stage
                         end
@@ -263,10 +263,10 @@ module processing_element(
                                     vacc_lane_val = acc_value;
                                     next_output_value = vacc_lane_val;
                                 end
-                            endcase 
+                            endcase
                         end
                         `PE_PASS_VALUE: begin
-                            case (pe_inst_ff.mode) 
+                            case (pe_inst_ff.mode)
                                 2'd0: begin // INT8
                                     for (i = 0; i < 4; i++) begin
                                         lane_in8 = vector_input[i * 8 +: 8];
@@ -307,11 +307,11 @@ module processing_element(
     always_ff @(posedge clk, negedge rst_n) begin
         integer i;
         if (!rst_n) begin
-            acc_value <= '0; 
+            acc_value <= '0;
             output_value <= '0;
             pe_inst_ff <= '0;
             pe_inst_valid_ff <= '0;
-            
+
             mac_stage2_valid <= '0;
             mode_stage2 <= '0;
             mul_result_ff <= '0;
@@ -320,13 +320,13 @@ module processing_element(
         end else begin
             pe_inst_ff <= pe_inst;
             pe_inst_valid_ff <= pe_inst_valid;
-            
+
             mac_stage2_valid <= is_mac_op;
             mode_stage2 <= mode_s1;
             mul_result_ff <= mul_result_comb;
             for (i = 0; i < 2; i++) mul_result_ff16[i] <= mul_result_comb16[i];
             for (i = 0; i < 4; i++) mul_result_ff8[i] <= mul_result_comb8[i];
-            
+
             acc_value <= next_acc_value;
             output_value <= next_output_value;
         end
